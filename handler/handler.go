@@ -42,3 +42,13 @@ func SendError(c *gin.Context, err error, data interface{}, cause string) {
 		Data:    data,
 	})
 }
+
+func SendUnauthorized(c *gin.Context, err error, data interface{}, cause string) {
+	code, message := errno.DecodeErr(err)
+	// log.Info(message, lager.Data{"X-Request-Id": util.GetReqID(c), "cause": cause})
+	c.JSON(http.StatusUnauthorized, Response{
+		Code:    code,
+		Message: message + ": " + cause,
+		Data:    data,
+	})
+}

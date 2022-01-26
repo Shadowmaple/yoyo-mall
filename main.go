@@ -1,15 +1,15 @@
 package main
 
 import (
+	"log"
 	"yoyo-mall/router"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 func main() {
 	// Set gin mode.
-	gin.SetMode(viper.GetString("runmode"))
+	gin.SetMode("debug")
 
 	// Create the Gin engine.
 	g := gin.New()
@@ -17,4 +17,5 @@ func main() {
 	// Routes.
 	router.Load(g)
 
+	log.Println(g.Run(":4096"))
 }
