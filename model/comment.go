@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"time"
+	"yoyo-mall/pkg/errno"
+)
 
 type CommentModel struct {
 	ID           uint32
@@ -13,4 +16,35 @@ type CommentModel struct {
 	CreateTime   *time.Time
 	IsDeleted    bool
 	DeleteTime   *time.Time
+}
+
+func (c *CommentModel) TableName() string {
+	return "comment"
+}
+
+func (c *CommentModel) Create() error {
+	return DB.Self.Create(c).Error
+}
+
+func (c *CommentModel) Save() error {
+	return DB.Self.Save(c).Error
+}
+
+func GetComments(evaluationID uint32, limit, offset int) ([]*CommentModel, error) {
+	list := make([]*CommentModel, 0)
+
+	d := DB.Self.Where("is_deleted = 0").Where("evaluation_id = ?", evaluationID).
+		Limit(limit).Offset(offset).Find(&list)
+
+	if d.RecordNotFound() {
+		return nil, errno.ErrRecordNotFound
+	}
+
+	return list, nil
+}
+
+func CountComment(evaluationID uint32) int {
+	var count int
+	DB.Self.Where("is_deleted = 0").Where("evaluation_id = ?", evaluationID).Count(&count)
+	return count
 }

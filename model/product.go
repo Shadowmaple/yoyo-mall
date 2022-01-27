@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"time"
+	"yoyo-mall/pkg/errno"
+)
 
 type ProductModel struct {
 	ID          uint32
@@ -33,4 +36,37 @@ func (p *ProductModel) Create() error {
 
 func (p *ProductModel) Save() error {
 	return DB.Self.Save(p).Error
+}
+
+func GetProductByID(id uint32) (*ProductModel, error) {
+	model := &ProductModel{}
+	d := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(model)
+	if d.RecordNotFound() {
+		return nil, errno.ErrRecordNotFound
+	}
+	return model, nil
+}
+
+type ProductItemModel struct {
+	ID          uint32
+	Title       string
+	Author      string
+	Publisher   string
+	BookName    string
+	Cid         uint32
+	Cid2        uint32
+	Price       float32
+	CurPrice    float32
+	Image       string
+	SaleNum     int
+	CommentNum  int
+	CommentRate float32
+	Score       float32
+	PublishTime *time.Time
+}
+
+func ProductList(sql string) ([]*ProductItemModel, error) {
+	products := make([]*ProductItemModel, 0)
+	err := DB.Self.Raw(sql).Scan(&products).Error
+	return products, err
 }

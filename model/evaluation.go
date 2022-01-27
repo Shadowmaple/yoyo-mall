@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"time"
+	"yoyo-mall/pkg/errno"
+)
 
 type EvaluationModel struct {
 	ID         uint32
@@ -15,4 +18,37 @@ type EvaluationModel struct {
 	CreateTime *time.Time
 	IsDeleted  bool
 	DeleteTime *time.Time
+}
+
+func (e *EvaluationModel) TableName() string {
+	return "evaluation"
+}
+
+func (e *EvaluationModel) Create() error {
+	return DB.Self.Create(e).Error
+}
+
+func (e *EvaluationModel) Save() error {
+	return DB.Self.Save(e).Error
+}
+
+func GetEvaluationList(userID, orderID, productID uint32, limit, offset int) ([]*EvaluationModel, error) {
+	list := make([]*EvaluationModel, 0)
+	query := DB.Self.Where("is_deleted = 0")
+	if userID > 0 {
+		query = query.Where("user_id = ?", userID)
+	}
+	if orderID > 0 {
+		query = query.Where("order_id = ?", orderID)
+	}
+	if productID > 0 {
+		query = query.Where("query_id = ?", productID)
+	}
+
+	d := query.Limit(limit).Offset(offset).Find(&list)
+	if d.RecordNotFound() {
+		return nil, errno.ErrRecordNotFound
+	}
+
+	return list, nil
 }

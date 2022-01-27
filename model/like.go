@@ -10,3 +10,16 @@ type LikeModel struct {
 	CreateTime *time.Time
 	IsDeleted  bool
 }
+
+func (m *LikeModel) TableName() string {
+	return "like"
+}
+
+func HasLiked(userID, commentID uint32, kind int8) bool {
+	var count int8
+	DB.Self.Where("is_deleted = 0").
+		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
+		Count(&count)
+
+	return count > 0
+}
