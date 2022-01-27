@@ -45,5 +45,5 @@ func GetUserByWechat(id string) (*UserModel, error) {
 	if d.RecordNotFound() {
 		return u, errno.ErrRecordNotFound
 	}
-	return u, nil
+	return u, d.Error
 }

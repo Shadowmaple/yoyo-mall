@@ -44,7 +44,7 @@ func GetProductByID(id uint32) (*ProductModel, error) {
 	if d.RecordNotFound() {
 		return nil, errno.ErrRecordNotFound
 	}
-	return model, nil
+	return model, d.Error
 }
 
 type ProductItemModel struct {
