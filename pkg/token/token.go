@@ -17,8 +17,9 @@ var (
 
 // Context is the context of the JSON web token.
 type Context struct {
-	ID   uint32
-	Role uint8
+	ID     uint32
+	Role   uint8
+	OpenID string // 微信用户唯一id
 }
 
 // secretFunc validates the secret format.
@@ -83,10 +84,11 @@ func Sign(ctx *gin.Context, c Context, secret string) (tokenString string, err e
 	}
 	// The token content.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":   c.ID,
-		"role": c.Role,
-		"nbf":  time.Now().Unix(), //JWT Token 生效时间
-		"iat":  time.Now().Unix(), //JWT Token 签发时间
+		"id":      c.ID,
+		"role":    c.Role,
+		"open_id": c.OpenID,
+		"nbf":     time.Now().Unix(), //JWT Token 生效时间
+		"iat":     time.Now().Unix(), //JWT Token 签发时间
 	})
 	// Sign the token with the specified secret.
 	tokenString, err = token.SignedString([]byte(secret))

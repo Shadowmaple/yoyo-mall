@@ -22,3 +22,15 @@ type ProductModel struct {
 	IsDeleted   bool
 	DeleteTime  *time.Time
 }
+
+func (p *ProductModel) TableName() string {
+	return "product"
+}
+
+func (p *ProductModel) Create() error {
+	return DB.Self.Create(p).Error
+}
+
+func (p *ProductModel) Save() error {
+	return DB.Self.Save(p).Error
+}

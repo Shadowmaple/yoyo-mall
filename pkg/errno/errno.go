@@ -49,5 +49,5 @@ func DecodeErr(err error) (int, string) {
 	default:
 	}
 
-	return InternalServerError.Code, err.Error()
+	return InternalError.Code, err.Error()
 }
