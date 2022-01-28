@@ -1,6 +1,22 @@
 package model
 
-import "time"
+import (
+	"time"
+	"yoyo-mall/pkg/errno"
+	"yoyo-mall/util"
+)
+
+/*
+
+订单状态：
+0->待付款，1->待发货，2->待收货，3->待评价，4->交易完成，5->交易取消，6->退货中，7->交易关闭
+
+状态变更图：
+1. 正常交易：0待付款->1待发货->2待收货->3待评价->4交易完成
+2. 未付款取消订单：0待付款->5交易取消
+3. 退货：0待付款->……->6退货中->7交易关闭
+
+*/
 
 type OrderModel struct {
 	ID          uint32
@@ -21,14 +37,42 @@ type OrderModel struct {
 	ConfirmTime *time.Time // 签收时间
 }
 
-type OrderProductModel struct {
-	ID         uint32
-	OrderID    uint32
-	ProductID  uint32
-	Num        int
-	Price      float32 // 单价-原价
-	CurPrice   float32 // 单价-优惠价
-	TotalFee   float32 // 总金额
-	Image      string  // 封面图片
-	CreateTime *time.Time
+func (m *OrderModel) TableName() string {
+	return "order"
+}
+
+func (m *OrderModel) Create() error {
+	m.CreateTime = util.GetCurrentTime()
+	return DB.Self.Create(m).Error
+}
+
+func (m *OrderModel) Save() error {
+	return DB.Self.Save(m).Error
+}
+
+func GetOrderByID(id uint32) (*OrderModel, error) {
+	model := &OrderModel{}
+	d := DB.Self.First(model, "id = ?", id)
+	if d.RecordNotFound() {
+		return model, errno.ErrRecordNotFound
+	}
+	return model, d.Error
+}
+
+func OrderList(userID uint32, limit, offset int, status int8) ([]*OrderModel, error) {
+	list := make([]*OrderModel, 0)
+
+	query := DB.Self.Where("user_id = ?", userID)
+
+	if status != -1 {
+		query = query.Where("status = ?", status)
+	}
+
+	d := query.Limit(limit).Offset(offset).Order("id desc").Find(&list)
+
+	if d.RecordNotFound() {
+		return list, nil
+	}
+
+	return list, d.Error
 }

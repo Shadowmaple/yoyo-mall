@@ -70,3 +70,9 @@ func ProductList(sql string) ([]*ProductItemModel, error) {
 	err := DB.Self.Raw(sql).Scan(&products).Error
 	return products, err
 }
+
+func ProductSearch(sql string) ([]*ProductItemModel, error) {
+	list := make([]*ProductItemModel, 0)
+	err := DB.Self.Raw(sql).Scan(&list).Error
+	return list, err
+}

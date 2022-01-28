@@ -7,6 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ListResp struct {
+	Total int         `json:"total"`
+	List  interface{} `json:"list"`
+}
+
 type Response struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`

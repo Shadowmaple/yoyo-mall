@@ -21,11 +21,12 @@ var (
 	ErrUserNotFound = &Errno{Code: 21001, Message: "User not found."}
 	ErrWechatServer = &Errno{Code: 21002, Message: "Wechat server error."}
 
+	// order errors
+	ErrOrderExpectedStatus = &Errno{Code: 22001, Message: "Expected updated order'status is wrong."}
+
 	// product errors
 
 	// comment errors
-
-	// order errors
 
 	// message errors
 

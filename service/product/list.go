@@ -45,7 +45,7 @@ product, order_product, evaluation
 
 销量：
 (
-select product_id, count(id) as sale_num
+select product_id, sum(num) as sale_num
 from order_product
 group by product_id
 ) as t1
@@ -91,7 +91,7 @@ from (
 	where cid = ? and cid2 = ?
 ) as t,
 (
-	select product_id, count(id) as sale_num
+	select product_id, sum(num) as sale_num
 	from order_product
 	group by product_id
 ) as t1,
@@ -125,7 +125,7 @@ from (
 	where %s
 ) as t,
 (
-	select product_id, count(id) as sale_num
+	select product_id, sum(num) as sale_num
 	from order_product
 	group by product_id
 ) as t1,
