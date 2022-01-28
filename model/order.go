@@ -76,3 +76,9 @@ func OrderList(userID uint32, limit, offset int, status int8) ([]*OrderModel, er
 
 	return list, d.Error
 }
+
+func OrderSearch(sql string) ([]*OrderModel, error) {
+	list := make([]*OrderModel, 0)
+	err := DB.Self.Raw(sql).Scan(&list).Error
+	return list, err
+}

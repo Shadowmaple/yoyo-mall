@@ -37,3 +37,11 @@ func GetProductByOrderID(orderID uint32) ([]*OrderProductInfo, error) {
 	}
 	return list, d.Error
 }
+
+type OrderSearchItem struct {
+	ID         uint32
+	Status     int8
+	TotalFee   float32
+	ProductNum int
+	ProductID  uint32
+}
