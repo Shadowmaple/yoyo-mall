@@ -34,7 +34,7 @@ func CollectBatchInsert(records []*ColletionModel) error {
 // 批量删除
 func CollectBatchDelete(list []uint32) error {
 	now := util.GetCurrentTime()
-	err := DB.Self.Model(ColletionModel{}).Where("id in ?", list).
+	err := DB.Self.Model(ColletionModel{}).Where("id in (?)", list).
 		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": now}).
 		Error
 

@@ -54,7 +54,7 @@ func UpdateCartNum(id uint32, num int) error {
 
 func CartBatchDelete(list []uint32) error {
 	now := util.GetCurrentTime()
-	err := DB.Self.Model(CartModel{}).Where("id in ?", list).
+	err := DB.Self.Model(CartModel{}).Where("id in (?)", list).
 		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": now}).
 		Error
 
