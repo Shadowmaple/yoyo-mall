@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/util"
 )
 
 type CommentModel struct {
@@ -23,11 +24,21 @@ func (c *CommentModel) TableName() string {
 }
 
 func (c *CommentModel) Create() error {
+	c.CreateTime = util.GetCurrentTime()
 	return DB.Self.Create(c).Error
 }
 
 func (c *CommentModel) Save() error {
 	return DB.Self.Save(c).Error
+}
+
+func GetCommentByID(id uint32) (*CommentModel, error) {
+	item := &CommentModel{}
+	d := DB.Self.Where("is_deleted = 0").First(item, "id = ?", id)
+	if d.RecordNotFound() {
+		return item, errno.ErrRecordNotFound
+	}
+	return item, d.Error
 }
 
 func GetComments(evaluationID uint32, limit, offset int) ([]*CommentModel, error) {

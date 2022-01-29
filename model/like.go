@@ -71,3 +71,11 @@ func Like(userID, commentID uint32, kind int8) error {
 	}
 	return DB.Self.Create(m).Error
 }
+
+func GetLikeNum(commentID uint32, kind int8) (count int, err error) {
+	DB.Self.Where("is_deleted = 0").
+		Where("comment_id = ? and kind = ?", commentID, kind).
+		Count(&count)
+
+	return
+}

@@ -18,6 +18,17 @@ func (m *OrderProductModel) TableName() string {
 	return "order_product"
 }
 
+func (OrderProductModel) GetByOrderID(orderID uint32) ([]*OrderProductModel, error) {
+	list := make([]*OrderProductModel, 0)
+
+	d := DB.Self.Where("order_id = ?", orderID).Find(&list)
+	if d.RecordNotFound() {
+		return list, nil
+	}
+
+	return list, d.Error
+}
+
 type OrderProductInfo struct {
 	OrderProductModel
 	Title  string

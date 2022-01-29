@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/util"
 )
 
 type EvaluationModel struct {
@@ -25,11 +26,25 @@ func (e *EvaluationModel) TableName() string {
 }
 
 func (e *EvaluationModel) Create() error {
+	e.CreateTime = util.GetCurrentTime()
 	return DB.Self.Create(e).Error
 }
 
 func (e *EvaluationModel) Save() error {
 	return DB.Self.Save(e).Error
+}
+
+func BatchCreateEvaluations(records []*EvaluationModel) error {
+	return DB.Self.Create(records).Error
+}
+
+func GetEvaluationByID(id uint32) (*EvaluationModel, error) {
+	var m EvaluationModel
+	d := DB.Self.First(&m, "id = ?", id)
+	if d.RecordNotFound() {
+		return nil, errno.ErrRecordNotFound
+	}
+	return &m, d.Error
 }
 
 func GetEvaluationList(userID, orderID, productID uint32, limit, offset int) ([]*EvaluationModel, error) {
@@ -42,7 +57,7 @@ func GetEvaluationList(userID, orderID, productID uint32, limit, offset int) ([]
 		query = query.Where("order_id = ?", orderID)
 	}
 	if productID > 0 {
-		query = query.Where("query_id = ?", productID)
+		query = query.Where("product_id = ?", productID)
 	}
 
 	d := query.Limit(limit).Offset(offset).Find(&list)
