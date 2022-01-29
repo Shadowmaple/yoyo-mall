@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+	"yoyo-mall/pkg/errno"
+	"yoyo-mall/util"
+)
 
 type CouponModel struct {
 	ID            uint32
@@ -24,11 +28,42 @@ type CouponModel struct {
 	DeleteTime    *time.Time
 }
 
-type UserCouponModel struct {
-	ID         uint32
-	UserID     uint32
-	CouponID   uint32
-	Status     int8       // 使用状态：0未使用，1已使用
-	Access     int8       // 获取方式：0领取，1兑换码
-	CreateTime *time.Time // 获取时间
+func (m *CouponModel) TableName() string {
+	return "coupon"
+}
+
+func (m *CouponModel) Create() error {
+	m.CreateTime = util.GetCurrentTime()
+	return DB.Self.Create(m).Error
+}
+
+func GetCoupons(limit, offset int, cid, cid2 uint32) ([]*CouponModel, error) {
+	list := make([]*CouponModel, 0)
+	now := util.GetCurrentTime()
+
+	// 未删除的且未失效的
+	query := DB.Self.Where("is_deleted = 0 and end_time > ?", now)
+
+	if cid > 0 {
+		query = query.Where("cid = ?", cid)
+	}
+	if cid2 > 0 {
+		query = query.Where("cid2 = ?", cid2)
+	}
+
+	d := query.Limit(limit).Offset(offset).Find(&list)
+	if d.RecordNotFound() {
+		return list, nil
+	}
+
+	return list, d.Error
+}
+
+func GetCouponByID(id uint32) (*CouponModel, error) {
+	var m *CouponModel
+	d := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(m)
+	if d.RecordNotFound() {
+		return nil, errno.ErrRecordNotFound
+	}
+	return m, d.Error
 }
