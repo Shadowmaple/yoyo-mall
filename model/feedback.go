@@ -9,6 +9,6 @@ type Feedback struct {
 	Content    string
 	Pictures   string // 反馈图片，分号分割
 	HasRead    bool
-	CreateTime *time.Time
-	ReadTime   *time.Time
+	CreateTime time.Time
+	ReadTime   time.Time
 }

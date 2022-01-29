@@ -15,7 +15,7 @@ type UserModel struct {
 	Password       string
 	State          int8 // 状态，0正常，1失效
 	Role           int8 // 角色，0普通用户，1管理员，2商家
-	CreateTime     *time.Time
+	CreateTime     time.Time
 }
 
 func (u *UserModel) TableName() string {

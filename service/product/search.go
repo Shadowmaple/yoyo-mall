@@ -79,7 +79,7 @@ func Search(userID uint32, limit, page int, filter SearchItem) (list []*ProductI
 			hasInCart = model.HasInCart(userID, item.ID)
 		}
 		image := util.GetFirstImage(item.Image)
-		publishTime, _ := util.ParseTime(item.PublishTime)
+		publishTime, _ := util.FormatTime(item.PublishTime)
 
 		list = append(list, &ProductItem{
 			ID:          item.ID,

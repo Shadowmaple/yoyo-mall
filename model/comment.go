@@ -13,9 +13,9 @@ type CommentModel struct {
 	ReplyUserID  uint32 // 向谁回复，暂时空着不做
 	Content      string
 	IsAnoymous   bool // 是否匿名
-	CreateTime   *time.Time
+	CreateTime   time.Time
 	IsDeleted    bool
-	DeleteTime   *time.Time
+	DeleteTime   time.Time
 }
 
 func (c *CommentModel) TableName() string {

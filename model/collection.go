@@ -10,9 +10,9 @@ type ColletionModel struct {
 	ID         uint32
 	UserID     uint32
 	ProductID  uint32
-	CreateTime *time.Time
+	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime *time.Time
+	DeleteTime time.Time
 }
 
 const CollectionTableName = "cart"

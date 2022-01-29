@@ -9,9 +9,9 @@ type UserCouponModel struct {
 	ID         uint32
 	UserID     uint32
 	CouponID   uint32
-	Status     int8       // 使用状态：0未使用，1已使用
-	Access     int8       // 获取方式：0领取，1兑换码
-	CreateTime *time.Time // 获取时间
+	Status     int8      // 使用状态：0未使用，1已使用
+	Access     int8      // 获取方式：0领取，1兑换码
+	CreateTime time.Time // 获取时间
 }
 
 func (m *UserCouponModel) TableName() string {
@@ -63,6 +63,7 @@ func GetUserCoupon(userID uint32, status int8) ([]*UserCouponItem, error) {
 			Joins("left join coupon on coupon.id = user_coupon.coupon_id").
 			Where("user_coupon.user_id = ?", userID).
 			Where("coupon.end_time < ?", now).
+			Where("coupon.is_deleted = 0").
 			Find(&list).
 			Error
 	} else {
@@ -70,8 +71,9 @@ func GetUserCoupon(userID uint32, status int8) ([]*UserCouponItem, error) {
 			Table("user_coupon").
 			Joins("left join coupon on coupon.id = user_coupon.coupon_id").
 			Where("user_coupon.user_id = ?", userID).
-			Where("status = ?", status).
+			Where("user_coupon.status = ?", status).
 			Where("coupon.end_time > ?", now).
+			Where("coupon.is_deleted = 0").
 			Find(&list).
 			Error
 	}

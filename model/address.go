@@ -16,9 +16,9 @@ type AddressModel struct {
 	District   string // 区县
 	Detail     string // 街道详情
 	IsDefault  bool   // 是否默认地址
-	CreateTime *time.Time
+	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime *time.Time
+	DeleteTime time.Time
 }
 
 func (a *AddressModel) TableName() string {

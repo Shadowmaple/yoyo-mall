@@ -10,9 +10,9 @@ type CategoryModel struct {
 	ParentID   uint32 // 父类目id，0则为根类目
 	Name       string
 	Image      string // 类目图片
-	CreateTime *time.Time
+	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime *time.Time
+	DeleteTime time.Time
 }
 
 func (c *CategoryModel) TableName() string {

@@ -58,11 +58,3 @@ func GrabCoupon(userID, couponID uint32, code string, isGrab bool) (item *Privat
 
 	return
 }
-
-func AddCoupon(req *CouponConfigItem) (err error) {
-	return
-}
-
-func UpdateCoupon(req *CouponConfigItem) (err error) {
-	return
-}

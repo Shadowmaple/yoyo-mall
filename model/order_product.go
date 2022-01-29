@@ -11,7 +11,7 @@ type OrderProductModel struct {
 	CurPrice   float32 // 单价-优惠价
 	TotalFee   float32 // 总金额
 	Image      string  // 封面图片
-	CreateTime *time.Time
+	CreateTime time.Time
 }
 
 func (m *OrderProductModel) TableName() string {

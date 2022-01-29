@@ -15,9 +15,9 @@ type EvaluationModel struct {
 	Rank       int8   // 0好评，1一般，2差评
 	IsAnoymous bool   // 是否匿名
 	Pictures   string // 图片，分号分割
-	CreateTime *time.Time
+	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime *time.Time
+	DeleteTime time.Time
 }
 
 func (e *EvaluationModel) TableName() string {
