@@ -12,7 +12,7 @@ select id, cid, cid2, title, author, publisher, book_name, price, cur_price, ima
 from (
 	select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image, publish_time
 	from product
-	where %s
+	where is_deleted = 0 and %s
 ) as t,
 (
 	select product_id, sum(num) as sale_num
@@ -24,11 +24,13 @@ from (
 	from (
 		select product_id, count(id) as num, sum(score)/num as score
 		from evaluation
+		where is_deleted = 0
 		group by product_id
 	) as t2 inner join
 	(
 		select product_id, count(id) as num
 		from evaluation
+		where is_deleted = 0
 		group by product_id
 		having rank = 0
 	) as t3
@@ -49,7 +51,7 @@ type SearchItem struct {
 func Search(userID uint32, limit, page int, filter SearchItem) (list []*ProductItem, err error) {
 	list = make([]*ProductItem, 0)
 
-	filterSQL := "1=1"
+	filterSQL := "1 = 1"
 	if len(filter.Title) > 0 {
 		filterSQL += ` and title like '%` + filter.Title + `%'`
 	}

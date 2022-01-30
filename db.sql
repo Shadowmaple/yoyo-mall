@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     UNIQUE KEY `idx_wechat_id` (`wechat_unique_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
+INSERT INTO `user` (`nickname`, `username`, `password`, `role`, `create_time`) VALUES('admin', 'admin', '', 1, now());
 
 -- 分类
 -- 数据量小，不建索引
@@ -27,14 +28,65 @@ CREATE TABLE IF NOT EXISTS `category` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL DEFAULT '',
     `image` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '类目图片',
-    `create_time` DATETIME NOT NULL,
-    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-    `delete_time` DATETIME DEFAULT NULL,
 
     `parent_id` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '父类目id，0为根类目',
 
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+
+INSERT INTO `category` (`name`, `parent_id`, `image`) VALUES
+('文学', 0, ''), ('人文社科', 0, ''), ('经管', 0, ''), ('艺术', 0, ''), ('科技', 0, ''), ('教育', 0, ''), ('生活', 0, ''), ('成功/励志', 0, ''), ('童书', 0, ''),
+('小说', 1, 'https://img9.doubanio.com/view/subject/s/public/s29350294.jpg'),
+('文学', 1, 'https://img9.doubanio.com/view/subject/m/public/s3552626.jpg'),
+('青春文学', 1, 'https://img1.doubanio.com/view/subject/m/public/s29766608.jpg'),
+('传记', 1, 'https://img1.doubanio.com/view/subject/m/public/s33699918.jpg'),
+('散文', 1, 'https://img9.doubanio.com/view/subject/m/public/s25616816.jpg'),
+('动漫/幽默', 1, 'https://img1.doubanio.com/view/subject/m/public/s2206907.jpg'),
+('纪实', 1, 'https://img9.doubanio.com/view/subject/m/public/s29111585.jpg'),
+('古诗词', 1, 'https://img1.doubanio.com/view/subject/m/public/s32318099.jpg'),
+('历史', 2, 'https://img9.doubanio.com/view/subject/m/public/s1800355.jpg'),
+('哲学/宗教', 2, 'https://img3.doubanio.com/view/subject/m/public/s29897220.jpg'),
+('文化', 2, 'https://img9.doubanio.com/view/subject/s/public/s29347294.jpg'),
+('社会科学', 2, 'https://img1.doubanio.com/view/subject/m/public/s33841867.jpg'),
+('心理学', 2, 'https://img2.doubanio.com/view/subject/m/public/s28338983.jpg'),
+('法律', 2, 'https://img2.doubanio.com/view/subject/m/public/s33655741.jpg'),
+('政治/军事', 2, 'https://img2.doubanio.com/view/subject/m/public/s27269441.jpg'),
+('经济', 3, 'https://img9.doubanio.com/view/subject/m/public/s27780875.jpg'),
+('管理', 3, 'https://img9.doubanio.com/view/subject/m/public/s29113625.jpg'),
+('投资理财', 3, 'https://img2.doubanio.com/view/subject/m/public/s3354143.jpg'),
+('摄影', 4, 'https://img9.doubanio.com/view/subject/s/public/s21942845.jpg'),
+('绘画', 4, 'https://img1.doubanio.com/view/subject/m/public/s33664998.jpg'),
+('书法篆刻', 4, 'https://img9.doubanio.com/view/subject/m/public/s33764806.jpg'),
+('音乐', 4, 'https://img2.doubanio.com/view/subject/m/public/s28845543.jpg'),
+('舞蹈', 4, 'https://img9.doubanio.com/view/subject/m/public/s33552965.jpg'),
+('科普', 5, 'https://img9.doubanio.com/view/subject/m/public/s9111416.jpg'),
+('计算机', 5, 'https://img1.doubanio.com/view/subject/m/public/s32513229.jpg'),
+('建筑', 5, 'https://img9.doubanio.com/view/subject/m/public/s29667115.jpg'),
+('医学', 5, 'https://img2.doubanio.com/view/subject/m/public/s28117212.jpg'),
+('农林', 5, 'https://img9.doubanio.com/view/subject/m/public/s6824945.jpg'),
+('自然科学', 5, 'https://img9.doubanio.com/view/subject/m/public/s33533954.jpg'),
+('工业', 5, 'https://img3.doubanio.com/view/subject/m/public/s33942780.jpg'),
+('中小学教辅', 6, 'https://img2.doubanio.com/view/subject/m/public/s29109031.jpg'),
+('考试', 6, 'https://img9.doubanio.com/view/subject/m/public/s33322276.jpg'),
+('外语', 6, 'https://img9.doubanio.com/view/subject/m/public/s29731505.jpg'),
+('教材', 6, 'https://img2.doubanio.com/view/subject/m/public/s28340131.jpg'),
+('工具书', 6, 'https://img9.doubanio.com/view/subject/m/public/s27287585.jpg'),
+('运动', 7, 'https://img3.doubanio.com/view/subject/m/public/s33450470.jpg'),
+('保健', 7, 'https://img9.doubanio.com/view/subject/m/public/s33744385.jpg'),
+('旅游', 7, 'https://img9.doubanio.com/view/subject/m/public/s22702375.jpg'),
+('两性', 7, 'https://img9.doubanio.com/view/subject/m/public/s28045305.jpg'),
+('亲子/家教', 7, 'https://img9.doubanio.com/view/subject/m/public/s29624136.jpg'),
+('美妆', 7, 'https://img3.doubanio.com/view/subject/m/public/s28302750.jpg'),
+('手工', 7, 'https://img1.doubanio.com/view/subject/m/public/s28876288.jpg'),
+('美食', 7, 'https://img2.doubanio.com/view/subject/m/public/s29140511.jpg'),
+('心灵与修养', 8, 'https://img1.doubanio.com/view/subject/m/public/s29237648.jpg'),
+('人际交往', 8, 'https://img1.doubanio.com/view/subject/m/public/s33901897.jpg'),
+('成功/激励', 8, 'https://img2.doubanio.com/view/subject/m/public/s33963701.jpg'),
+('人生哲学', 8, 'https://img2.doubanio.com/view/subject/m/public/s29962521.jpg'),
+('口才/演讲/辩论', 8, 'https://img1.doubanio.com/view/subject/m/public/s9346487.jpg'),
+('性格与习惯', 8, 'https://img9.doubanio.com/view/subject/m/public/s29714854.jpg'),
+('童书', 9, 'https://img1.doubanio.com/view/subject/m/public/s33539207.jpg');
 
 
 -- 商品
@@ -47,13 +99,12 @@ CREATE TABLE IF NOT EXISTS `product` (
     `publisher` VARCHAR(255) NOT NULL DEFAULT '',
     `price` DECIMAL(10, 2) NOT NULL DEFAULT 0 COMMENT '原价',
     `cur_price` DECIMAL(10, 2) NOT NULL DEFAULT 0 COMMENT '优惠价',
-    `stock` INT NOT NULL DEFAULT '' COMMENT '库存',
-    `detail` TEXT NOT NULL DEFAULT '' COMMENT '详情信息',
-    `images` TEXT NOT NULL DEFAULT '' COMMENT '图片，分号分割',
+    `stock` INT NOT NULL DEFAULT 0 COMMENT '库存',
+    `detail` TEXT COMMENT '详情信息',
+    `images` TEXT COMMENT '图片，分号分割',
     `status` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '状态，0正常，1下架',
     `publish_time` DATETIME DEFAULT NULL COMMENT '出版时间',
     `create_time` DATETIME NOT NULL,
-    `update_time` DATETIME NOT NULL,
     `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
     `delete_time` DATETIME DEFAULT NULL,
 
@@ -61,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `product` (
     `cid2` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '二级类目',
 
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_cid` (`cid`, `cid2`)
+    KEY `idx_cid` (`cid`, `cid2`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 
@@ -110,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `order` (
     `receive_name` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '收件人',
     `receive_tel` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '收件人联系电话',
     `receive_addr` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '收件人地址',
-    `refund` TEXT NOT NULL DEFAULT '' COMMENT '退货退款内容（暂时占位）',
+    `refund` TEXT COMMENT '退货退款内容（暂时占位）',
     `order_code` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '订单编号',
     `create_time` DATETIME NOT NULL,
     `pay_time` DATETIME NOT NULL COMMENT '付款时间',
@@ -164,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
     `score` TINYINT NOT NULL DEFAULT 0 COMMENT '评分',
     `rank` TINYINT NOT NULL DEFAULT 0 COMMENT '0好评，1一般，2差评',
     `is_anoymous` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否匿名评价',
-    `pictures` TEXT NOT NULL DEFAULT '' COMMENT '评价图片，分号分割',
+    `pictures` TEXT COMMENT '评价图片，分号分割',
     `create_time` DATETIME NOT NULL,
     `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
     `delete_time` DATETIME DEFAULT NULL,
@@ -190,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
     `user_id` INT UNSIGNED NOT NULL DEFAULT 0,
     `evaluation_id` INT UNSIGNED NOT NULL DEFAULT 0,
     `parent_id` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '父评论id，默认为0，暂时占位',
-    `reply_user_id` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '向谁回复，暂时占位'
+    `reply_user_id` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '向谁回复，暂时占位',
 
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -281,7 +332,7 @@ CREATE TABLE IF NOT EXISTS `feedback` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `kind` TINYINT NOT NULL DEFAULT 0 COMMENT '反馈类型：0产品建议，1功能异常，2违规举报，3交易投诉',
     `content` VARCHAR(255) NOT NULL DEFAULT '',
-    `pictures` TEXT NOT NULL DEFAULT '' COMMENT '图片，分号分割',
+    `pictures` TEXT COMMENT '图片，分号分割',
     `has_read` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否已读',
     `create_time` DATETIME NOT NULL,
     `read_time` DATETIME DEFAULT NULL,

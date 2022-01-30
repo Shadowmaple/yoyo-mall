@@ -1,18 +1,14 @@
 package model
 
 import (
-	"time"
 	"yoyo-mall/pkg/errno"
 )
 
 type CategoryModel struct {
-	ID         uint32
-	ParentID   uint32 // 父类目id，0则为根类目
-	Name       string
-	Image      string // 类目图片
-	CreateTime time.Time
-	IsDeleted  bool
-	DeleteTime time.Time
+	ID       uint32
+	ParentID uint32 // 父类目id，0则为根类目
+	Name     string
+	Image    string // 类目图片
 }
 
 func (c *CategoryModel) TableName() string {

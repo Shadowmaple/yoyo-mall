@@ -21,7 +21,6 @@ type ProductModel struct {
 	Status      int8      // 状态，0正常，1下架
 	PublishTime time.Time // 出版时间
 	CreateTime  time.Time
-	UpdateTime  time.Time
 	IsDeleted   bool
 	DeleteTime  time.Time
 }
