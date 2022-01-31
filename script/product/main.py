@@ -3,7 +3,6 @@ import io
 import random
 import sys
 import time
-from tokenize import Number
 
 from crawler import Crawler
 from data import target_list
@@ -17,37 +16,42 @@ class Service:
         # 数据标题集合，用来去重
         self.data_set = set()
 
+
     def run(self):
         # 对每个类目进行爬取
         for target in self.target_list:
-            name, url, num = target['name'], target['url'], target['num']
-            print('-------------- {} is crawling: {}, {}'.format(name, url, num), flush=True)
-            crawler = Crawler(name, url, num)
-            crawler.run()
+            self.run_once(target)
 
-            cid = target['cid']
-            cid2 = target['cid2']
 
-            # 添加元素
-            cur_list = crawler.data
-            for item in cur_list:
-                key = item['author'] + item['title']
-                if key in self.data_set:
-                    continue
-                self.data_set.add(key)
-                self.data.append({
-                    'cid': cid,
-                    'cid2': cid2,
-                    'title': item['title'],
-                    'author': item['author'],
-                    'publisher': item['publisher'],
-                    'publish_time': item['publish_time'],
-                    'image': item['image'],
-                    'price': item['price'],
-                    'cur_price': item['cur_price'],
-                    'info_url': item['info_url'],
-                    'detail': item['detail'],
-                })
+    def run_once(self, target):
+        name, url, num = target['name'], target['url'], target['num']
+        print('-------------- {} is crawling: {}, {}'.format(name, url, num), flush=True)
+        crawler = Crawler(name, url, num)
+        crawler.run()
+
+        cid = target['cid']
+        cid2 = target['cid2']
+
+        # 添加元素
+        cur_list = crawler.data
+        for item in cur_list:
+            key = item['author'] + item['title']
+            if key in self.data_set:
+                continue
+            self.data_set.add(key)
+            self.data.append({
+                'cid': cid,
+                'cid2': cid2,
+                'title': item['title'],
+                'author': item['author'],
+                'publisher': item['publisher'],
+                'publish_time': item['publish_time'],
+                'image': item['image'],
+                'price': item['price'],
+                'cur_price': item['cur_price'],
+                'info_url': item['info_url'],
+                'detail': item['detail'],
+            })
 
 
     def scatter(self):
@@ -57,7 +61,7 @@ class Service:
         random.shuffle(self.data)
 
 
-    def store(self):
+    def store(self, file='data.csv'):
         """ 以CSV文件存储 """
         print('-------------- service is storing... total_rows={}'.format(len(self.data)), flush=True)
         rows = []
@@ -80,7 +84,7 @@ class Service:
             'price', 'cur_price', 'images', 'info_url', 'detail', 'create_time',
             'stock'
         ]
-        with open('data.csv','w', newline='', encoding='utf-8') as f:
+        with open(file, 'w', newline='', encoding='utf-8') as f:
             f_csv = csv.writer(f)
             f_csv.writerow(headers)
             f_csv.writerows(rows)
@@ -97,8 +101,17 @@ def get_cur_time() -> str:
     localtime = time.localtime(time.time())
     return time.strftime('%Y-%m-%d %H:%M:%S', localtime)
 
-def generate_stock() -> Number:
-    return random.random(300, 2301)
+
+def generate_stock() -> int:
+    return random.randint(300, 2300)
+
+
+def test():
+    service = Service(target_list=target_list)
+    service.run_once(target=target_list[-2])
+    service.store('test.csv')
+
 
 if __name__ == "__main__":
     run_service()
+    # test()

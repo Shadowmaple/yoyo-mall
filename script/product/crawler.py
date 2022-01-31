@@ -1,4 +1,5 @@
 import time
+from email import header
 
 import requests
 from bs4 import BeautifulSoup as bs
@@ -27,13 +28,16 @@ class Crawler:
             self.data.extend(list)
             if next_url != "":
                 url = next_url
-            time.sleep(0.5)
+            time.sleep(0.8)
 
 
 def spider_once(url):
     """ 请求一次，解析html """
     print(url, flush=True)
-    r = requests.get(url=url, timeout=5)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
+    }
+    r = requests.get(url=url, timeout=5, headers=headers)
     # 使用 lxml 解析器
     soup = bs(r.text, 'lxml')
     list = soup.find_all('li')
@@ -59,13 +63,17 @@ def parse_book_info(li) -> dict:
     # 标题
     title = li.a.get('title').strip()
     # 图片url
-    image = "http:" + li.a.img.get('src')
+    image = parse_image(li)
+    if image == "":
+        print("get book's image failed: {}".format(title), flush=True)
+        return None
+
     #  图书详情地址
     info_url = "http:" + li.a.get('href')
     # 详情介绍
-    # todo：去除尾部的“推荐您购买……”
-    detail_tag = li.select_one('p.detail')
-    detail = detail_tag.text.replace('★', '').replace('◆', '').replace('�h', '')
+    detail = parse_detail(li)
+    if detail is None or len(detail) == 0:
+        return None
 
     # 价格
     price_tag = li.select_one('p.price')
@@ -92,7 +100,31 @@ def parse_book_info(li) -> dict:
     }
 
 
+def parse_image(tag) -> str:
+    """ 解析获取图片地址 """
+    # todo: 图片获取失败：images/model/guan/url_none.png
+    img_tag = tag.a.img
+    src = img_tag.get('src')
+    if "url_none" in src:
+        src = img_tag.get('data-original')
+        if src == "" or "url_none" in src:
+            print('get image failed: ', tag, flush=True)
+            return ""
+
+    image = "http:" + src
+    return image
+
+
+def parse_detail(tag) -> str:
+    # todo：去除尾部的“推荐您购买……”
+    # todo: 获取失败，为空
+    detail_tag = tag.select_one('p.detail')
+    detail = detail_tag.text.replace('★', '').replace('◆', '').replace('�h', '')
+    return detail
+
+
 def parse_author(tag) -> dict:
+    """ 解析获取作者、出版社、出版时间 """
     spans = tag.find_all('span')
     if len(spans) != 3:
         print('--------- author_publish_tag error --------', flush=True)
