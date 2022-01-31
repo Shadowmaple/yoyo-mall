@@ -1,9 +1,12 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 type AddressModel struct {
@@ -18,7 +21,7 @@ type AddressModel struct {
 	IsDefault  bool   // 是否默认地址
 	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime time.Time
+	DeleteTime *time.Time
 }
 
 func (a *AddressModel) TableName() string {
@@ -36,22 +39,19 @@ func (a *AddressModel) Save() error {
 
 func GetAddressByID(id uint32) (*AddressModel, error) {
 	var model *AddressModel
-	d := DB.Self.Where("is_deleted = 0").First(model, "id = ?", id)
-	if d.RecordNotFound() {
+	err := DB.Self.Where("is_deleted = 0").First(model, "id = ?", id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
-	return model, d.Error
+	return model, nil
 }
 
 func AddressList(userID uint32) ([]*AddressModel, error) {
 	list := make([]*AddressModel, 0)
 
-	d := DB.Self.Where("is_deleted = 0").Where("user_id = ?", userID).Find(&list)
-	if d.RecordNotFound() {
-		return nil, errno.ErrRecordNotFound
-	}
+	err := DB.Self.Where("is_deleted = 0").Where("user_id = ?", userID).Find(&list).Error
 
-	return list, d.Error
+	return list, err
 }
 
 // 修改非默认地址的is_default字段

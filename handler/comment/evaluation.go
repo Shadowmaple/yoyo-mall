@@ -9,8 +9,8 @@ import (
 )
 
 type EvaluationListReq struct {
-	Limit     int
-	Page      int
+	Limit     int    `form:"limit"`
+	Page      int    `form:"page"`
 	ProductID uint32 `form:"product_id"`
 }
 

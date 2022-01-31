@@ -1,8 +1,11 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
+
+	"gorm.io/gorm"
 )
 
 type ProductModel struct {
@@ -40,7 +43,7 @@ func (p *ProductModel) Save() error {
 func GetProductByID(id uint32) (*ProductModel, error) {
 	model := &ProductModel{}
 	d := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(model)
-	if d.RecordNotFound() {
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
 	return model, d.Error
@@ -55,13 +58,13 @@ type ProductItemModel struct {
 	Cid         uint32
 	Cid2        uint32
 	Price       float32
-	CurPrice    float32
-	Image       string
+	CurPrice    float32 `gorm:"column:cur_price"` // column后不能由空格
+	Images      string
 	SaleNum     int
 	CommentNum  int
 	CommentRate float32
 	Score       float32
-	PublishTime time.Time
+	PublishTime time.Time `gorm:"column:publish_time"`
 }
 
 func ProductList(sql string) ([]*ProductItemModel, error) {

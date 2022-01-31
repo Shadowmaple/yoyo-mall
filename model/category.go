@@ -1,7 +1,10 @@
 package model
 
 import (
+	"errors"
 	"yoyo-mall/pkg/errno"
+
+	"gorm.io/gorm"
 )
 
 type CategoryModel struct {
@@ -25,8 +28,8 @@ func (c *CategoryModel) Save() error {
 
 func GetCategoryByID(id uint32) (*CategoryModel, error) {
 	m := &CategoryModel{}
-	d := DB.Self.First(m, "id = ?", id)
-	if d.RecordNotFound() {
+	err := DB.Self.First(m, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return m, errno.ErrRecordNotFound
 	}
 	return m, nil

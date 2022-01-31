@@ -1,9 +1,12 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 type CouponModel struct {
@@ -55,21 +58,18 @@ func GetCoupons(limit, offset int, cid, cid2 uint32) ([]*CouponModel, error) {
 		query = query.Where("cid2 = ?", cid2)
 	}
 
-	d := query.Limit(limit).Offset(offset).Find(&list)
-	if d.RecordNotFound() {
-		return list, nil
-	}
+	err := query.Limit(limit).Offset(offset).Find(&list).Error
 
-	return list, d.Error
+	return list, err
 }
 
 func GetCouponByID(id uint32) (*CouponModel, error) {
 	var m *CouponModel
-	d := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(m)
-	if d.RecordNotFound() {
+	err := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(m).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
-	return m, d.Error
+	return m, err
 }
 
 func DeleteCoupon(id uint32) error {

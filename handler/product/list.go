@@ -9,16 +9,16 @@ import (
 )
 
 type ListReq struct {
-	Limit int
-	Page  int
-	Cid   uint32
-	Cid2  uint32
-	Sort  int
+	Limit int    `form:"limit"`
+	Page  int    `form:"page"`
+	Cid   uint32 `form:"cid"`
+	Cid2  uint32 `form:"cid2"`
+	Sort  int    `form:"sort"`
 }
 
 type ListResp struct {
-	Total int
-	List  []*product.ProductItem
+	Total int                    `json:"total"`
+	List  []*product.ProductItem `json:"list"`
 }
 
 func List(c *gin.Context) {
@@ -26,6 +26,10 @@ func List(c *gin.Context) {
 	if err := c.BindQuery(req); err != nil {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
+	}
+
+	if req.Limit == 0 {
+		req.Limit = 20
 	}
 
 	var userID uint32

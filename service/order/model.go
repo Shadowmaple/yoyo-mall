@@ -33,13 +33,13 @@ type ProductItem struct {
 }
 
 type NewOrderItem struct {
-	TotalFee    float32
-	Payment     float32
-	Coupon      float32
-	Freight     float32
-	ReceiveName string
-	ReceiveTel  string
-	ReceiveAddr string
-	ProductNum  int
-	Products    []*ProductItem
+	TotalFee    float32        `json:"total_fee"`
+	Payment     float32        `json:"payment"`
+	Coupon      float32        `json:"coupon"`
+	Freight     float32        `json:"freight"`
+	ReceiveName string         `json:"receive_name"`
+	ReceiveTel  string         `json:"receive_tel"`
+	ReceiveAddr string         `json:"receive_addr"`
+	ProductNum  int            `json:"product_num"`
+	Products    []*ProductItem `json:"products"`
 }

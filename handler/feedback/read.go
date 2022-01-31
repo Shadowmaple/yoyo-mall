@@ -9,7 +9,7 @@ import (
 )
 
 type ReadReq struct {
-	Data []uint32
+	Data []uint32 `json:"data"`
 }
 
 func Read(c *gin.Context) {

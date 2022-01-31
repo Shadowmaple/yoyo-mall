@@ -5,13 +5,13 @@ import (
 )
 
 type AddressInfo struct {
-	ID        uint32
-	Name      string
-	Tel       string
-	Province  string
-	City      string
-	District  string
-	IsDefault bool
+	ID        uint32 `json:"id"`
+	Name      string `json:"name"`
+	Tel       string `json:"tel"`
+	Province  string `json:"province"`
+	City      string `json:"city"`
+	District  string `json:"district"`
+	IsDefault bool   `json:"is_default"`
 }
 
 func Update(userID uint32, addr *AddressInfo) error {

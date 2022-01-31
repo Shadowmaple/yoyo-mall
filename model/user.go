@@ -1,8 +1,11 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
+
+	"gorm.io/gorm"
 )
 
 type UserModel struct {
@@ -33,7 +36,7 @@ func (u *UserModel) Save() error {
 func GetUserByID(id uint32) (*UserModel, error) {
 	u := &UserModel{}
 	d := DB.Self.First(u, "id = ?", id)
-	if d.RecordNotFound() {
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
 		return u, errno.ErrRecordNotFound
 	}
 	return u, nil
@@ -42,7 +45,7 @@ func GetUserByID(id uint32) (*UserModel, error) {
 func GetUserByWechat(id string) (*UserModel, error) {
 	u := &UserModel{}
 	d := DB.Self.First(u, "wechat_unique_id = ?", id)
-	if d.RecordNotFound() {
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
 		return u, errno.ErrRecordNotFound
 	}
 	return u, d.Error

@@ -38,7 +38,7 @@ type ProductItem struct {
 
 商品按类目过滤
 select * from product
-where cid = ? and cid2 = ?
+where is_deleted = 0 and cid = ? and cid2 = ?
 
 涉及的表：
 product, order_product, evaluation
@@ -52,101 +52,117 @@ group by product_id
 
 评论数、平均评分
 (
-select product_id, count(id) as num, sum(score)/num as score
-from evaluation
-group by product_id
+select product_id, num, total_score/num as score
+from (
+	select product_id, count(id) as num, sum(score) as total_score
+	from evaluation
+	where is_deleted = 0
+	group by product_id
+) as t2_1
 ) as t2
 
 好评数
+(
 select product_id, count(id) as num
 from evaluation
+where is_deleted = 0 and level = 0
 group by product_id
-having rank = 0
 ) as t3
 
-评论数、平均评分、好评率
+表连接，获取评论数、平均评分、好评率
 (
-select product_id, t2.num as comment_num, t2.score, t3.num/t2.num as comment_rate
+select t2.product_id, t2.num as comment_num, t2.score, t3.num/t2.num as comment_rate
 from t2 inner join t3
 where t2.product_id = t3.product_id
 ) as t4
 
-综合
-select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image, t1.sale_num, comment_num, comment_rate
-from (
-	select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image
-	from product
-	where cid = ? and cid2 = ?
-) as t, t1, t4
-where t.id = t1.product_id and t.id = t4.product_id
-
----
-
-综合结果：
-
-select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image, publish_time, t1.sale_num, comment_num, comment_rate
-from (
-	select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image, publish_time
-	from product
-	where cid = ? and cid2 = ?
-) as t,
+先获取商品信息和销量
 (
+select id, cid, cid2, title, author, publisher, book_name, price, cur_price, images,
+	ifnull(t1.sale_num, 0) as sale_num
+from product left join (
 	select product_id, sum(num) as sale_num
 	from order_product
 	group by product_id
-) as t1,
-(
-	select product_id, t2.num as comment_num, t2.score, t3.num/t2.num as comment_rate
-	from (
-		select product_id, count(id) as num, sum(score)/num as score
-		from evaluation
+) as t1
+on product.id = t1.product_id
+where product.is_deleted = 0
+) as t5
+
+
+再综合得到商品评价信息：
+select t5.*, ifnull(t4.comment_num, 0) as comment_num, ifnull(t4.score, 0) as score, ifnull(t4.comment_rate, 0) as comment_rate
+from t5 left join t4
+on t5.id = t4.product_id
+
+综合结果：
+
+select t5.*, ifnull(t4.comment_num, 0) as comment_num,
+	ifnull(t4.score, 0) as score, ifnull(t4.comment_rate, 0) as comment_rate
+from (
+	select id, cid, cid2, title, author, publisher, book_name, price, cur_price, images, publish_time,
+		ifnull(t1.sale_num, 0) as sale_num
+	from product left join (
+		select product_id, sum(num) as sale_num
+		from order_product
 		group by product_id
-	) as t2 inner join
-	(
+	) as t1
+	on product.id = t1.product_id
+	where product.is_deleted = 0
+) as t5 left join (
+	select t2.product_id, t2.num as comment_num, t2.score, t3.num/t2.num as comment_rate
+	from (
+		select product_id, num, total_score/num as score
+		from (
+			select product_id, count(id) as num, sum(score) as total_score
+			from evaluation
+			where is_deleted = 0
+			group by product_id
+		) as t2_1
+	) as t2 inner join (
 		select product_id, count(id) as num
 		from evaluation
+		where is_deleted = 0 and level = 0
 		group by product_id
-		having rank = 0
 	) as t3
 	where t2.product_id = t3.product_id
 ) as t4
-where t.id = t1.product_id and t.id = t4.product_id
-order by ?
-limit ?
-offset ?;
+on t5.id = t4.product_id
 
 */
 
 const listQuerySQL = `
-select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image, publish_time, t1.sale_num, comment_num, comment_rate
+select t5.*, ifnull(t4.comment_num, 0) as comment_num,
+	ifnull(t4.score, 0) as score, ifnull(t4.comment_rate, 0) as comment_rate
 from (
-	select id, cid, cid2, title, author, publisher, book_name, price, cur_price, image, publish_time
-	from product
-	where is_deleted = 0 and %s
-) as t,
-(
-	select product_id, sum(num) as sale_num
-	from order_product
-	group by product_id
-) as t1,
-(
-	select product_id, t2.num as comment_num, t2.score, t3.num/t2.num as comment_rate
-	from (
-		select product_id, count(id) as num, sum(score)/num as score
-		from evaluation
-		where is_deleted = 0
+	select id, cid, cid2, title, author, publisher, book_name, price, cur_price, images, publish_time,
+		ifnull(t1.sale_num, 0) as sale_num
+	from product left join (
+		select product_id, sum(num) as sale_num
+		from order_product
 		group by product_id
-	) as t2 inner join
-	(
+	) as t1
+	on product.id = t1.product_id
+	where product.is_deleted = 0 and %s
+) as t5 left join (
+	select t2.product_id, t2.num as comment_num, t2.score, t3.num/t2.num as comment_rate
+	from (
+		select product_id, num, total_score/num as score
+		from (
+			select product_id, count(id) as num, sum(score) as total_score
+			from evaluation
+			where is_deleted = 0
+			group by product_id
+		) as t2_1
+	) as t2 inner join (
 		select product_id, count(id) as num
 		from evaluation
-		where is_deleted = 0
+		where is_deleted = 0 and level = 0
 		group by product_id
-		having rank = 0
 	) as t3
 	where t2.product_id = t3.product_id
 ) as t4
-where t.id = t1.product_id and t.id = t4.product_id
+on t5.id = t4.product_id
 order by %s
 limit %d
 offset %d;
@@ -192,7 +208,7 @@ func List(userID uint32, limit, page int, filter FilterItem) (list []*ProductIte
 			hasStar = model.HasStar(userID, item.ID)
 			hasInCart = model.HasInCart(userID, item.ID)
 		}
-		image := util.GetFirstImage(item.Image)
+		image := util.GetFirstImage(item.Images)
 		publishTime, _ := util.FormatTime(item.PublishTime)
 
 		list = append(list, &ProductItem{

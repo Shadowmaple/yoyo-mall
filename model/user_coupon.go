@@ -1,8 +1,11 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 type UserCouponModel struct {
@@ -39,7 +42,7 @@ func UpdateUserCouponStatus(userID, couponID uint32, status int8) error {
 func HasGrabCoupon(userID, couponID uint32) bool {
 	var m UserCouponModel
 	d := DB.Self.Where("user_id = ? and coupon_id = ?", userID, couponID).First(&m)
-	if d.RecordNotFound() && d.Error == nil {
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
 		return false
 	}
 	return true

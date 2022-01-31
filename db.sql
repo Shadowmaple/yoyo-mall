@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `content` VARCHAR(255) NOT NULL DEFAULT '',
     `score` TINYINT NOT NULL DEFAULT 0 COMMENT '评分',
-    `rank` TINYINT NOT NULL DEFAULT 0 COMMENT '0好评，1一般，2差评',
+    `level` TINYINT NOT NULL DEFAULT 0 COMMENT '0好评，1一般，2差评',
     `is_anoymous` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否匿名评价',
     `pictures` TEXT COMMENT '评价图片，分号分割',
     `create_time` DATETIME NOT NULL,

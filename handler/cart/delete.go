@@ -9,7 +9,7 @@ import (
 )
 
 type DelReq struct {
-	List []uint32
+	List []uint32 `json:"list"`
 }
 
 // 删除商品

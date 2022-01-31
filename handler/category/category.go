@@ -9,8 +9,8 @@ import (
 )
 
 type GetResp struct {
-	Total int
-	List  []*category.CidItem
+	Total int                 `json:"total"`
+	List  []*category.CidItem `json:"list"`
 }
 
 func Get(c *gin.Context) {

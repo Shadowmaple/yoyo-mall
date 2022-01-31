@@ -9,9 +9,9 @@ import (
 )
 
 type ListReq struct {
-	Kind  int
-	Limit int
-	Page  int
+	Kind  int `form:"kind"`
+	Limit int `form:"limit"`
+	Page  int `form:"page"`
 }
 
 func List(c *gin.Context) {

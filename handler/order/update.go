@@ -10,7 +10,7 @@ import (
 )
 
 type UpdateReq struct {
-	Status int8
+	Status int8 `form:"status"`
 }
 
 // 修改订单状态，只能为1/2/3/5/6，即完成付款、已发货、已签收、取消订单、退货

@@ -12,10 +12,10 @@ type BasicItem struct {
 
 // 批量插入
 func BatchAdd(userID uint32, list []BasicItem) error {
-	records := make([]*model.CartModel, 0, len(list))
+	records := make([]model.CartModel, 0, len(list))
 
 	for _, item := range list {
-		records = append(records, &model.CartModel{
+		records = append(records, model.CartModel{
 			UserID:     userID,
 			ProductID:  item.ID,
 			Num:        item.Num,

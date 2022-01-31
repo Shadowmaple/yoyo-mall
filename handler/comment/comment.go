@@ -10,8 +10,8 @@ import (
 )
 
 type CommentListReq struct {
-	Limit int
-	Page  int
+	Limit int `form:"limit"`
+	Page  int `form:"page"`
 }
 
 func CommentList(c *gin.Context) {

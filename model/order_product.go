@@ -22,9 +22,6 @@ func (OrderProductModel) GetByOrderID(orderID uint32) ([]*OrderProductModel, err
 	list := make([]*OrderProductModel, 0)
 
 	d := DB.Self.Where("order_id = ?", orderID).Find(&list)
-	if d.RecordNotFound() {
-		return list, nil
-	}
 
 	return list, d.Error
 }
@@ -43,9 +40,6 @@ func GetProductByOrderID(orderID uint32) ([]*OrderProductInfo, error) {
 		Where("order_id = ?", orderID).
 		Find(&list)
 
-	if d.RecordNotFound() {
-		return list, nil
-	}
 	return list, d.Error
 }
 

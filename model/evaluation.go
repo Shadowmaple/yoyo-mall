@@ -1,9 +1,12 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 type EvaluationModel struct {
@@ -13,12 +16,12 @@ type EvaluationModel struct {
 	ProductID  uint32
 	Content    string
 	Score      int8   // 评分，1-5
-	Rank       int8   // 0好评，1一般，2差评
+	Level      int8   // 0好评，1一般，2差评
 	IsAnoymous bool   // 是否匿名
 	Pictures   string // 图片，分号分割
 	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime time.Time
+	DeleteTime *time.Time
 }
 
 func (e *EvaluationModel) TableName() string {
@@ -40,11 +43,11 @@ func BatchCreateEvaluations(records []*EvaluationModel) error {
 
 func GetEvaluationByID(id uint32) (*EvaluationModel, error) {
 	var m EvaluationModel
-	d := DB.Self.First(&m, "id = ?", id)
-	if d.RecordNotFound() {
+	err := DB.Self.First(&m, "id = ?", id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
-	return &m, d.Error
+	return &m, err
 }
 
 func GetEvaluationList(userID, orderID, productID uint32, limit, offset int) ([]*EvaluationModel, error) {
@@ -60,10 +63,7 @@ func GetEvaluationList(userID, orderID, productID uint32, limit, offset int) ([]
 		query = query.Where("product_id = ?", productID)
 	}
 
-	d := query.Limit(limit).Offset(offset).Find(&list)
-	if d.RecordNotFound() {
-		return nil, errno.ErrRecordNotFound
-	}
+	err := query.Limit(limit).Offset(offset).Find(&list).Error
 
-	return list, nil
+	return list, err
 }

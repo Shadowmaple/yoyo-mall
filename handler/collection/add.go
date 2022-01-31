@@ -10,7 +10,7 @@ import (
 )
 
 type AddReq struct {
-	List []uint32
+	List []uint32 `json:"list"`
 }
 
 func Add(c *gin.Context) {

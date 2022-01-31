@@ -1,9 +1,11 @@
 package model
 
 import (
+	"errors"
 	"time"
-	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 type ColletionModel struct {
@@ -12,7 +14,7 @@ type ColletionModel struct {
 	ProductID  uint32
 	CreateTime time.Time
 	IsDeleted  bool
-	DeleteTime time.Time
+	DeleteTime *time.Time
 }
 
 const CollectionTableName = "cart"
@@ -43,12 +45,12 @@ func CollectBatchDelete(list []uint32) error {
 
 func HasStar(userID, productID uint32) bool {
 	m := &CartModel{}
-	d := DB.Self.Table(CollectionTableName).
+	err := DB.Self.Table(CollectionTableName).
 		Where("is_deleted = 0").
 		Where("user_id = ? and product_id = ?", userID, productID).
-		First(m)
+		First(m).Error
 
-	if d.RecordNotFound() {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return false
 	}
 	return true
@@ -60,10 +62,6 @@ func GetCollection(userID uint32, limit, offset int) ([]*ColletionModel, error) 
 		Where("user_id = ?", userID).
 		Limit(limit).Offset(offset).
 		Find(&list)
-
-	if d.RecordNotFound() {
-		return nil, errno.ErrRecordNotFound
-	}
 
 	return list, d.Error
 }

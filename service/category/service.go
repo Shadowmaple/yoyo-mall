@@ -3,15 +3,15 @@ package category
 import "yoyo-mall/model"
 
 type Cid2Item struct {
-	ID    uint32
-	Name  string
-	Image string
+	ID    uint32 `json:"id"`
+	Name  string `json:"name"`
+	Image string `json:"image"`
 }
 
 type CidItem struct {
-	ID   uint32
-	Name string
-	List []*Cid2Item
+	ID   uint32      `json:"id"`
+	Name string      `json:"name"`
+	List []*Cid2Item `json:"list"`
 }
 
 func GetList() ([]*CidItem, error) {

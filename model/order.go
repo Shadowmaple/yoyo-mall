@@ -1,9 +1,12 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 /*
@@ -53,8 +56,8 @@ func (m *OrderModel) Save() error {
 func GetOrderByID(id uint32) (*OrderModel, error) {
 	model := &OrderModel{}
 	d := DB.Self.First(model, "id = ?", id)
-	if d.RecordNotFound() {
-		return model, errno.ErrRecordNotFound
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
+		return nil, errno.ErrRecordNotFound
 	}
 	return model, d.Error
 }
@@ -69,10 +72,6 @@ func OrderList(userID uint32, limit, offset int, status int8) ([]*OrderModel, er
 	}
 
 	d := query.Limit(limit).Offset(offset).Order("id desc").Find(&list)
-
-	if d.RecordNotFound() {
-		return list, nil
-	}
 
 	return list, d.Error
 }

@@ -1,37 +1,37 @@
 package coupon
 
 type BasicCoupon struct {
-	ID        uint32
-	Cid       uint32 // 所属一级类目
-	Cid2      uint32 // 所属二级类目
-	Discount  int    // 折扣金额
-	Threshold int    // 满减门槛
-	Kind      int8   // 优惠券种类，默认为0，暂时就一种
-	Title     string // 标题
-	BeginTime string // 生效开始时间
-	EndTime   string // 生效结束时间
+	ID        uint32 `json:"id"`
+	Cid       uint32 `json:"cid"`        // 所属一级类目
+	Cid2      uint32 `json:"cid_2"`      // 所属二级类目
+	Discount  int    `json:"discount"`   // 折扣金额
+	Threshold int    `json:"threshold"`  // 满减门槛
+	Kind      int8   `json:"kind"`       // 优惠券种类，默认为0，暂时就一种
+	Title     string `json:"title"`      // 标题
+	BeginTime string `json:"begin_time"` // 生效开始时间
+	EndTime   string `json:"end_time"`   // 生效结束时间
 }
 
 type PublicItem struct {
 	BasicCoupon
-	Remain        int    // 剩余数
-	GrabBeginTime string // 领取开始时间
-	GrabEndTime   string // 领取截止时间
-	HasGrabbed    bool
+	Remain        int    `json:"remain"`          // 剩余数
+	GrabBeginTime string `json:"grab_begin_time"` // 领取开始时间
+	GrabEndTime   string `json:"grab_end_time"`   // 领取截止时间
+	HasGrabbed    bool   `json:"has_grabbed"`
 }
 
 type PrivateItem struct {
 	BasicCoupon
-	Access int8
+	Access int8 `json:"access"`
 }
 
 type CouponConfigItem struct {
 	BasicCoupon
-	IsPublic      bool   // 是否公共可领取
-	Code          string // 兑换码
-	Remain        int    // 剩余数
-	GrabBeginTime string // 领取开始时间
-	GrabEndTime   string // 领取截止时间
-	CodeBeginTime string // 兑换开始时间
-	CodeEndTime   string // 兑换截止时间
+	IsPublic      bool   `json:"is_public"`       // 是否公共可领取
+	Code          string `json:"code"`            // 兑换码
+	Remain        int    `json:"remain"`          // 剩余数
+	GrabBeginTime string `json:"grab_begin_time"` // 领取开始时间
+	GrabEndTime   string `json:"grab_end_time"`   // 领取截止时间
+	CodeBeginTime string `json:"code_begin_time"` // 兑换开始时间
+	CodeEndTime   string `json:"code_end_time"`   // 兑换截止时间
 }

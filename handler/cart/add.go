@@ -9,7 +9,7 @@ import (
 )
 
 type AddReq struct {
-	List []cart.BasicItem
+	List []cart.BasicItem `json:"list"`
 }
 
 // 添加商品

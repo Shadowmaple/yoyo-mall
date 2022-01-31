@@ -1,8 +1,12 @@
 package model
 
 import (
+	"errors"
 	"time"
+	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 type LikeModel struct {
@@ -19,7 +23,7 @@ func (m *LikeModel) TableName() string {
 }
 
 func HasLiked(userID, commentID uint32, kind int8) bool {
-	var count int8
+	var count int64
 	DB.Self.Where("is_deleted = 0").
 		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
 		Count(&count)
@@ -32,9 +36,11 @@ func GetLikedRecord(userID, commentID uint32, kind, isDeleted int8) (*LikeModel,
 	d := DB.Self.Where("is_deleted = ?", isDeleted).
 		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
 		First(m)
-	if d.RecordNotFound() {
-		return nil, nil
+
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
+		return nil, errno.ErrRecordNotFound
 	}
+
 	return m, d.Error
 }
 
@@ -43,7 +49,7 @@ func Unlike(userID, commentID uint32, kind int8) error {
 	err := DB.Self.
 		Where("is_deleted = 0").
 		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
-		Update(map[string]interface{}{"is_deleted": 1, "delete_time": deleteTime}).
+		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": deleteTime}).
 		Error
 
 	return err
@@ -72,10 +78,11 @@ func Like(userID, commentID uint32, kind int8) error {
 	return DB.Self.Create(m).Error
 }
 
-func GetLikeNum(commentID uint32, kind int8) (count int, err error) {
+func GetLikeNum(commentID uint32, kind int8) (int, error) {
+	var count int64
 	DB.Self.Where("is_deleted = 0").
 		Where("comment_id = ? and kind = ?", commentID, kind).
 		Count(&count)
 
-	return
+	return int(count), nil
 }

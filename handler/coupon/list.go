@@ -10,14 +10,14 @@ import (
 )
 
 type PrivateListReq struct {
-	Status int8
+	Status int8 `form:"status"`
 }
 
 type PublicListReq struct {
-	Page  int
-	Limit int
-	Cid   uint32
-	Cid2  uint32
+	Page  int    `form:"page"`
+	Limit int    `form:"limit"`
+	Cid   uint32 `form:"cid"`
+	Cid2  uint32 `form:"cid2"`
 }
 
 func PrivateList(c *gin.Context) {

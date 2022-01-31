@@ -9,9 +9,9 @@ import (
 )
 
 type RankReq struct {
-	Kind int
-	Cid  uint32
-	Cid2 uint32
+	Kind int    `form:"kind"`
+	Cid  uint32 `form:"cid"`
+	Cid2 uint32 `form:"cid2"`
 }
 
 // 获取榜单

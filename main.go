@@ -28,7 +28,6 @@ func main() {
 
 	// init DB
 	model.DB.Init()
-	defer model.DB.Close()
 
 	// Set gin mode.
 	gin.SetMode(viper.GetString("runmode"))

@@ -1,7 +1,6 @@
 package search
 
 import (
-	"log"
 	"yoyo-mall/handler"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/service/product"
@@ -10,12 +9,12 @@ import (
 )
 
 type ProductSearchReq struct {
-	Limit     int
-	Page      int
-	Title     string
-	Book      string
-	Author    string
-	Publisher string
+	Limit     int    `form:"limit"`
+	Page      int    `form:"page"`
+	Title     string `form:"title"`
+	Book      string `form:"book"`
+	Author    string `form:"author"`
+	Publisher string `form:"publisher"`
 }
 
 func ProductSearch(c *gin.Context) {
@@ -24,7 +23,10 @@ func ProductSearch(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
-	log.Printf("%+v", req)
+
+	if req.Limit <= 0 {
+		req.Limit = 20
+	}
 
 	userID := c.GetUint("id")
 

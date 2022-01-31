@@ -9,7 +9,7 @@ import (
 )
 
 type UpdateReq struct {
-	List []cart.BasicItem
+	List []cart.BasicItem `json:"list"`
 }
 
 // 修改商品数量等信息

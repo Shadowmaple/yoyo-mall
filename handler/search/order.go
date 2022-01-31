@@ -9,9 +9,9 @@ import (
 )
 
 type OrderSearchReq struct {
-	Limit int
-	Page  int
-	Key   string
+	Limit int    `form:"limit"`
+	Page  int    `form:"page"`
+	Key   string `form:"key"`
 }
 
 func OrderSearch(c *gin.Context) {

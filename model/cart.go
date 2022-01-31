@@ -1,20 +1,22 @@
 package model
 
 import (
+	"errors"
 	"time"
-	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 // 购物车
 type CartModel struct {
 	ID         uint32
-	UserID     uint32
-	ProductID  uint32
-	Num        int // 商品数量
-	CreateTime time.Time
+	UserID     uint32    `gorm:"column:user_id"`
+	ProductID  uint32    `gorm:"column:product_id"`
+	Num        int       `gorm:"column:num"` // 商品数量
+	CreateTime time.Time `gorm:"column:create_time"`
 	IsDeleted  bool
-	DeleteTime time.Time
+	DeleteTime *time.Time
 }
 
 const CartTableName = "cart"
@@ -28,12 +30,13 @@ func (c *CartModel) Create() error {
 	return DB.Self.Create(c).Error
 }
 
-func CartBatchInsert(records []*CartModel) error {
+func CartBatchInsert(records []CartModel) error {
 	return DB.Self.Create(&records).Error
 }
 
 func UpdateCartNum(id uint32, num int) error {
 	err := DB.Self.
+		Model(CartModel{}).
 		Where("is_deleted = 0").
 		Where("id = ?", id).
 		Update("num", num).Error
@@ -63,12 +66,12 @@ func CartBatchDelete(list []uint32) error {
 
 func GetProductNumInCart(userID, productID uint32) int {
 	m := &CartModel{}
-	d := DB.Self.Table(CartTableName).
+	err := DB.Self.Table(CartTableName).
 		Where("is_deleted = 0").
 		Where("user_id = ? and product_id = ?", userID, productID).
-		First(m)
+		First(m).Error
 
-	if d.RecordNotFound() {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0
 	}
 	return m.Num
@@ -81,9 +84,6 @@ func HasInCart(userID, productID uint32) bool {
 
 func GetCarts(userID uint32) ([]*CartModel, error) {
 	var list []*CartModel
-	d := DB.Self.Where("is_deleted = 0").Where("user_id = ?", userID).Find(&list)
-	if d.RecordNotFound() {
-		return nil, errno.ErrRecordNotFound
-	}
-	return list, d.Error
+	err := DB.Self.Where("is_deleted = 0").Where("user_id = ?", userID).Find(&list).Error
+	return list, err
 }

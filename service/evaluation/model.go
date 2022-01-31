@@ -5,7 +5,7 @@ type BasicItem struct {
 	OrderID    uint32   `json:"order_id"`
 	Content    string   `json:"content"`
 	Score      int8     `json:"score"`
-	Rank       int8     `json:"rank"`
+	Level      int8     `json:"level"`
 	IsAnoymous bool     `json:"is_anoymous"`
 	Pictures   []string `json:"pictures"`
 }

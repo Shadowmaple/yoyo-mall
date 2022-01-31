@@ -9,8 +9,8 @@ import (
 )
 
 type GrabReq struct {
-	Code string
-	ID   uint32
+	Code string `form:"code"`
+	ID   uint32 `form:"id"`
 }
 
 // 获取优惠券

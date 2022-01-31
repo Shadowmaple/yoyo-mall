@@ -40,9 +40,7 @@ func GetFeedbacks(limit, offset int, kind, readFilter int8) ([]*FeedbackModel, e
 	}
 
 	d := query.Limit(limit).Offset(offset).Find(&list)
-	if d.RecordNotFound() {
-		return list, nil
-	}
+
 	return list, d.Error
 }
 

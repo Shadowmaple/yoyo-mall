@@ -25,7 +25,7 @@ func New(userID uint32, req *BasicItem) (err error) {
 			ProductID:  productID,
 			Content:    req.Content,
 			Score:      req.Score,
-			Rank:       req.Rank,
+			Level:      req.Level,
 			IsAnoymous: req.IsAnoymous,
 			Pictures:   util.MergeMultiImage(req.Pictures),
 			CreateTime: now,
@@ -47,7 +47,7 @@ func Update(userID uint32, req *BasicItem) (err error) {
 	}
 	record.Content = req.Content
 	record.Score = req.Score
-	record.Rank = req.Rank
+	record.Level = req.Level
 	record.IsAnoymous = req.IsAnoymous
 	record.Pictures = util.MergeMultiImage(req.Pictures)
 

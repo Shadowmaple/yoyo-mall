@@ -15,11 +15,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
+const LoginURL = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
+
+var (
 	AppID  = "wx2a28193a6082cbb3"
 	Secret = ""
-
-	LoginURL = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
 )
 
 type WechatLoginResp struct {
@@ -54,6 +54,8 @@ func Login(c *gin.Context) {
 		handler.SendError(c, errno.ErrWechatServer, nil, err.Error())
 		return
 	}
+
+	// resp = &WechatLoginResp{OpenID: "test"}
 
 	// 数据库用户表操作
 	userID, isNew, err := user.Login(resp.OpenID)

@@ -1,9 +1,12 @@
 package model
 
 import (
+	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/util"
+
+	"gorm.io/gorm"
 )
 
 /*
@@ -29,19 +32,17 @@ func (m *LogisticsModel) Create() error {
 
 func GetLogisticByID(id uint32) (*LogisticsModel, error) {
 	model := &LogisticsModel{}
-	d := DB.Self.First(model, "id = ?")
-	if d.RecordNotFound() {
+	err := DB.Self.First(model, "id = ?").Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
-	return model, d.Error
+	return model, err
 }
 
 func GetLogisticsByOrderID(orderID uint32) ([]*LogisticsModel, error) {
 	list := make([]*LogisticsModel, 0)
 
 	d := DB.Self.Where("order_id = ?", orderID).Find(&list)
-	if d.RecordNotFound() {
-		return list, errno.ErrRecordNotFound
-	}
+
 	return list, d.Error
 }

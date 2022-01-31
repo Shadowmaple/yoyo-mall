@@ -50,7 +50,7 @@ func List(userID, productID uint32, limit, page int) (list []*EvaluationItem, er
 				OrderID:    record.OrderID,
 				Content:    record.Content,
 				Score:      record.Score,
-				Rank:       record.Rank,
+				Level:      record.Level,
 				IsAnoymous: record.IsAnoymous,
 				Pictures:   util.ParseMultiImage(record.Pictures),
 			},

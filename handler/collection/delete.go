@@ -10,7 +10,7 @@ import (
 )
 
 type DeleteReq struct {
-	List []uint32
+	List []uint32 `json:"list"`
 }
 
 func Delete(c *gin.Context) {
