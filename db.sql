@@ -164,9 +164,9 @@ CREATE TABLE IF NOT EXISTS `order` (
     `refund` TEXT COMMENT '退货退款内容（暂时占位）',
     `order_code` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '订单编号',
     `create_time` DATETIME NOT NULL,
-    `pay_time` DATETIME NOT NULL COMMENT '付款时间',
-    `deliver_time` DATETIME NOT NULL COMMENT '发货时间',
-    `confirm_time` DATETIME NOT NULL COMMENT '签收时间',
+    `pay_time` DATETIME NULL COMMENT '付款时间',
+    `deliver_time` DATETIME NULL COMMENT '发货时间',
+    `confirm_time` DATETIME NULL COMMENT '签收时间',
 
     `user_id` INT UNSIGNED NOT NULL DEFAULT 0,
 
