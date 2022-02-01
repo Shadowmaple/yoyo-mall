@@ -66,7 +66,7 @@ func CartBatchDelete(list []uint32) error {
 
 func GetProductNumInCart(userID, productID uint32) int {
 	m := &CartModel{}
-	err := DB.Self.Table(CartTableName).
+	err := DB.Self.
 		Where("is_deleted = 0").
 		Where("user_id = ? and product_id = ?", userID, productID).
 		First(m).Error
@@ -84,6 +84,8 @@ func HasInCart(userID, productID uint32) bool {
 
 func GetCarts(userID uint32) ([]*CartModel, error) {
 	var list []*CartModel
-	err := DB.Self.Where("is_deleted = 0").Where("user_id = ?", userID).Find(&list).Error
+	err := DB.Self.Where("is_deleted = 0").
+		Where("user_id = ?", userID).Order("id desc").
+		Find(&list).Error
 	return list, err
 }

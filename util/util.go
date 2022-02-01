@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -19,4 +20,10 @@ func GetFirstImage(s string) string {
 	}
 
 	return s[:idx]
+}
+
+func GenOrderCode(id uint32) (s string) {
+	timestamp := GetCurrentTime().Unix()
+	s = fmt.Sprintf("%d0%d", timestamp, id)
+	return
 }

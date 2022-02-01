@@ -6,10 +6,10 @@ import (
 )
 
 type Item struct {
-	ID      uint32
-	Content string
-	Time    string
-	Status  int8
+	ID      uint32 `json:"id"`
+	Content string `json:"content"`
+	Time    string `json:"time"`
+	Status  int8   `json:"status"`
 }
 
 // 某订单的物流信息

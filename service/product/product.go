@@ -75,7 +75,7 @@ func GetProfile(id, userID uint32, commentLimit int) (list *ProductProfile, err 
 	cartNum := 0
 	if userID > 0 {
 		hasStar = model.HasStar(userID, id)
-		cartNum := model.GetProductNumInCart(userID, id)
+		cartNum = model.GetProductNumInCart(userID, id)
 		if cartNum > 0 {
 			hasInCart = true
 		}

@@ -20,7 +20,7 @@ func New(userID uint32, req *NewOrderItem) (orderID uint32, err error) {
 		ReceiveTel:  req.ReceiveTel,
 		ReceiveAddr: req.ReceiveAddr,
 		Refund:      "",
-		OrderCode:   "",
+		OrderCode:   util.GenOrderCode(userID),
 		CreateTime:  now,
 	}
 
@@ -75,15 +75,15 @@ func UpdateStatus(id uint32, expectedStatus int8) error {
 	switch expectedStatus {
 	case 1:
 		// 变为已付款/待发货，物流信息
-		record.PayTime = now
+		record.PayTime = &now
 		logisticState = 0
 	case 2:
 		// 变为已发货/待收货
-		record.DeliverTime = now
+		record.DeliverTime = &now
 		logisticState = 1
 	case 3:
 		// 变为已签收/待评价
-		record.ConfirmTime = now
+		record.ConfirmTime = &now
 		logisticState = 2
 	case 5:
 		// 未支付下取消订单

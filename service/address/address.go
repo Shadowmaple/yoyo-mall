@@ -11,6 +11,7 @@ type AddressInfo struct {
 	Province  string `json:"province"`
 	City      string `json:"city"`
 	District  string `json:"district"`
+	Detail    string `json:"detail"`
 	IsDefault bool   `json:"is_default"`
 }
 
@@ -20,18 +21,25 @@ func Update(userID uint32, addr *AddressInfo) error {
 		return err
 	}
 
+	// 是否需要更新默认地址
+	changeDetfault := false
+	if addr.IsDefault && !record.IsDefault {
+		changeDetfault = true
+	}
+
 	record.Name = addr.Name
 	record.Tel = addr.Tel
 	record.Province = addr.Province
 	record.City = addr.City
 	record.District = addr.District
+	record.Detail = addr.Detail
 	record.IsDefault = addr.IsDefault
 	if err := record.Save(); err != nil {
 		return err
 	}
 
 	// 设置为了默认地址，则需要将其它地址都变为非默认地址
-	if addr.IsDefault && !record.IsDefault {
+	if changeDetfault {
 		if err := model.UpdateNotDefaultAddress(userID, addr.ID); err != nil {
 			return err
 		}
@@ -48,6 +56,7 @@ func Add(userID uint32, addr *AddressInfo) error {
 		Province:  addr.Province,
 		City:      addr.City,
 		District:  addr.District,
+		Detail:    addr.Detail,
 		IsDefault: addr.IsDefault,
 	}
 	if err := record.Create(); err != nil {

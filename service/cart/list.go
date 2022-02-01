@@ -7,13 +7,14 @@ import (
 )
 
 type CartItem struct {
-	ID       uint32  `json:"id"`
-	Title    string  `json:"title"`
-	Author   string  `json:"author"`
-	Price    float32 `json:"price"`
-	CurPrice float32 `json:"cur_price"`
-	Image    string  `json:"image"`
-	Num      int     `json:"num"`
+	ID        uint32  `json:"id"`
+	ProductID uint32  `json:"product_id"`
+	Title     string  `json:"title"`
+	Author    string  `json:"author"`
+	Price     float32 `json:"price"`
+	CurPrice  float32 `json:"cur_price"`
+	Image     string  `json:"image"`
+	Num       int     `json:"num"`
 }
 
 // todo: 一次SQL查询
@@ -41,13 +42,14 @@ func List(userID uint32) (list []*CartItem, err error) {
 		}
 
 		list = append(list, &CartItem{
-			ID:       item.ID,
-			Title:    product.Title,
-			Author:   product.Author,
-			Price:    product.Price,
-			CurPrice: product.CurPrice,
-			Image:    util.GetFirstImage(product.Images),
-			Num:      item.Num,
+			ID:        item.ID,
+			ProductID: item.ProductID,
+			Title:     product.Title,
+			Author:    product.Author,
+			Price:     product.Price,
+			CurPrice:  product.CurPrice,
+			Image:     util.GetFirstImage(product.Images),
+			Num:       item.Num,
 		})
 	}
 

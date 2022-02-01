@@ -38,12 +38,12 @@ func (a *AddressModel) Save() error {
 }
 
 func GetAddressByID(id uint32) (*AddressModel, error) {
-	var model *AddressModel
-	err := DB.Self.Where("is_deleted = 0").First(model, "id = ?", id).Error
+	var model = &AddressModel{}
+	err := DB.Self.Where("is_deleted = 0").First(model, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
-	return model, nil
+	return model, err
 }
 
 func AddressList(userID uint32) ([]*AddressModel, error) {
@@ -67,7 +67,7 @@ func UpdateNotDefaultAddress(userID, id uint32) error {
 
 func DeleteAddress(userID, id uint32) error {
 	deleteTime := util.GetStandardTime(util.GetCurrentTime())
-	err := DB.Self.
+	err := DB.Self.Model(AddressModel{}).
 		Where("is_deleted = 0").
 		Where("user_id = ? and id = ?", userID, id).
 		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": deleteTime}).

@@ -39,9 +39,10 @@ and id in (
 
 */
 
+// 表名要用反引号包起来，不然和MySQL关键字冲突会报错
 const SearchSQL = `
 select *
-from order
+from ` + "`order`" + `
 where user_id = %d
 and id in (
 	select distinct op.order_id

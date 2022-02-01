@@ -1,7 +1,6 @@
 package coupon
 
 import (
-	"fmt"
 	"yoyo-mall/handler"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/service/coupon"
@@ -47,7 +46,10 @@ func PublicList(c *gin.Context) {
 		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
 		return
 	}
-	fmt.Printf("%+v", req)
+
+	if req.Limit <= 0 {
+		req.Limit = 20
+	}
 
 	userID := c.MustGet("id").(uint32)
 

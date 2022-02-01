@@ -106,7 +106,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// logistic 物流
-	logisticsGp := g.Group(BasePath + "/logistic")
+	logisticsGp := g.Group(BasePath + "/logistics")
 	{
 		logisticsGp.GET("", authFunc(), logistics.Get)
 		logisticsGp.GET("/list", adminAuthFunc(), logistics.List)

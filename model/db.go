@@ -3,10 +3,13 @@ package model
 import (
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Database struct {
@@ -23,7 +26,18 @@ func openDB(username, password, addr, name string) *gorm.DB {
 		name,
 	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	logger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Millisecond, // 慢SQL阈值
+			LogLevel:                  logger.Info,      // 日志级别
+			IgnoreRecordNotFoundError: false,            // 忽略ErrRecordNotFound（记录未找到）错误
+			Colorful:                  true,             // 彩色打印
+		},
+	)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger,
+	})
 	if err != nil {
 		log.Println(err, "Database connection failed. Database name: %s", name)
 	}

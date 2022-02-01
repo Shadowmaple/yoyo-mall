@@ -35,9 +35,9 @@ type OrderModel struct {
 	Refund      string // 退货退款内容，暂时占位
 	OrderCode   string // 订单编号
 	CreateTime  time.Time
-	PayTime     time.Time // 付款时间
-	DeliverTime time.Time // 发货时间
-	ConfirmTime time.Time // 签收时间
+	PayTime     *time.Time // 付款时间
+	DeliverTime *time.Time // 发货时间
+	ConfirmTime *time.Time // 签收时间
 }
 
 func (m *OrderModel) TableName() string {

@@ -21,6 +21,10 @@ func EvaluationList(c *gin.Context) {
 		return
 	}
 
+	if req.Limit <= 0 {
+		req.Limit = 20
+	}
+
 	userID := c.GetUint("id")
 
 	list, err := evaluation.List(uint32(userID), req.ProductID, req.Limit, req.Page)

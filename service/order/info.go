@@ -80,6 +80,17 @@ func processRawOrder(record *model.OrderModel) (item *OrderItem, err error) {
 	title := getGeneralTitle(products)
 	image := getGeneralImage(products)
 
+	var payTime, deliverTime, confirmTime string
+	if record.PayTime != nil {
+		payTime = util.GetStandardTime(*record.PayTime)
+	}
+	if record.DeliverTime != nil {
+		deliverTime = util.GetStandardTime(*record.DeliverTime)
+	}
+	if record.ConfirmTime != nil {
+		confirmTime = util.GetStandardTime(*record.ConfirmTime)
+	}
+
 	item = &OrderItem{
 		ID:          record.ID,
 		Status:      record.Status,
@@ -92,9 +103,9 @@ func processRawOrder(record *model.OrderModel) (item *OrderItem, err error) {
 		ReceiveAddr: record.ReceiveAddr,
 		OrderCode:   record.OrderCode,
 		CreateTime:  util.GetStandardTime(record.CreateTime),
-		PayTime:     util.GetStandardTime(record.PayTime),
-		DeliverTime: util.GetStandardTime(record.DeliverTime),
-		ConfirmTime: util.GetStandardTime(record.ConfirmTime),
+		PayTime:     payTime,
+		DeliverTime: deliverTime,
+		ConfirmTime: confirmTime,
 		ProductNum:  len(products),
 		Title:       title,
 		Image:       image,

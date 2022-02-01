@@ -9,15 +9,15 @@ import (
 )
 
 type ColletionModel struct {
-	ID         uint32
-	UserID     uint32
-	ProductID  uint32
-	CreateTime time.Time
-	IsDeleted  bool
+	ID         uint32    `gorm:"column:id"`
+	UserID     uint32    `gorm:"column:user_id"`
+	ProductID  uint32    `gorm:"column:product_id"`
+	CreateTime time.Time `gorm:"column:create_time"`
+	IsDeleted  bool      `gorm:"is_deleted"`
 	DeleteTime *time.Time
 }
 
-const CollectionTableName = "cart"
+const CollectionTableName = "collection"
 
 func (c *ColletionModel) TableName() string {
 	return CollectionTableName
@@ -44,8 +44,8 @@ func CollectBatchDelete(list []uint32) error {
 }
 
 func HasStar(userID, productID uint32) bool {
-	m := &CartModel{}
-	err := DB.Self.Table(CollectionTableName).
+	m := &ColletionModel{}
+	err := DB.Self.
 		Where("is_deleted = 0").
 		Where("user_id = ? and product_id = ?", userID, productID).
 		First(m).Error
@@ -60,6 +60,7 @@ func GetCollection(userID uint32, limit, offset int) ([]*ColletionModel, error) 
 	list := make([]*ColletionModel, 0)
 	d := DB.Self.Where("is_deleted = 0").
 		Where("user_id = ?", userID).
+		Order("id desc").
 		Limit(limit).Offset(offset).
 		Find(&list)
 
