@@ -127,6 +127,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		commentGp.GET("/list", visitorAuthFunc(), comment.EvaluationList)
 		commentGp.POST("", authFunc(), comment.EvaluationCreateOrUpdate)
+		commentGp.GET("/info/:id", visitorAuthFunc(), comment.EvaluationInfo)
 		commentGp.GET("/info/:id/comment", visitorAuthFunc(), comment.CommentList)
 		commentGp.POST("/info/:id/comment", authFunc(), comment.CommentCreateOrUpdate)
 	}

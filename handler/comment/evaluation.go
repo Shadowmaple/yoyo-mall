@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"strconv"
 	"yoyo-mall/handler"
 	"yoyo-mall/pkg/errno"
 	"yoyo-mall/service/evaluation"
@@ -61,4 +62,21 @@ func EvaluationCreateOrUpdate(c *gin.Context) {
 	}
 
 	handler.SendResponse(c, nil, nil)
+}
+
+func EvaluationInfo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		handler.SendBadRequest(c, errno.ErrGetParam, nil, err.Error())
+		return
+	}
+
+	userID := c.GetUint("id")
+	data, err := evaluation.Info(uint32(id), uint32(userID))
+	if err != nil {
+		handler.SendError(c, errno.InternalError, nil, err.Error())
+		return
+	}
+
+	handler.SendResponse(c, nil, data)
 }
