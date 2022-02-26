@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/util"
 
 	"gorm.io/gorm"
 )
@@ -26,6 +27,7 @@ func (u *UserModel) TableName() string {
 }
 
 func (u *UserModel) Create() error {
+	u.CreateTime = util.GetCurrentTime()
 	return DB.Self.Create(u).Error
 }
 

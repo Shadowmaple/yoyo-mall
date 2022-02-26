@@ -13,6 +13,7 @@ import (
 	"yoyo-mall/service/user"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 const LoginURL = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
@@ -77,7 +78,11 @@ func Login(c *gin.Context) {
 }
 
 func requestWechatLogin(code string) (*WechatLoginResp, error) {
-	requestURL := fmt.Sprintf(LoginURL, AppID, Secret, code)
+	appID := viper.GetString("wechat.app_id")
+	secret := viper.GetString("wechat.secret")
+	fmt.Println("appID and secret: ", appID, secret)
+
+	requestURL := fmt.Sprintf(LoginURL, appID, secret, code)
 
 	resp, err := http.Get(requestURL)
 	if err != nil {

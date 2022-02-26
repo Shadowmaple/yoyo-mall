@@ -3,6 +3,7 @@ package order
 import (
 	"yoyo-mall/model"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/pkg/log"
 	"yoyo-mall/service/logistics"
 	"yoyo-mall/util"
 )
@@ -32,6 +33,7 @@ func New(userID uint32, req *NewOrderItem) (orderID uint32, err error) {
 
 	if err = tx.Create(order).Error; err != nil {
 		tx.Rollback()
+		log.Info("order create error: " + err.Error())
 		return
 	}
 
@@ -52,6 +54,7 @@ func New(userID uint32, req *NewOrderItem) (orderID uint32, err error) {
 
 	if err = tx.Create(&productRecords).Error; err != nil {
 		tx.Rollback()
+		log.Info("productRecord create error: " + err.Error())
 		return
 	}
 

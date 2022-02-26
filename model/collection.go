@@ -33,10 +33,20 @@ func CollectBatchInsert(records []*ColletionModel) error {
 	return DB.Self.Create(&records).Error
 }
 
-// 批量删除
+// 批量删除（根据记录id）
 func CollectBatchDelete(list []uint32) error {
 	now := util.GetCurrentTime()
 	err := DB.Self.Model(ColletionModel{}).Where("id in (?)", list).
+		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": now}).
+		Error
+
+	return err
+}
+
+// 根据商品id和用户id删除
+func CollectDelByProductID(userID, productID uint32) error {
+	now := util.GetCurrentTime()
+	err := DB.Self.Model(ColletionModel{}).Where("user_id = ? and product_id = ?", userID, productID).
 		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": now}).
 		Error
 

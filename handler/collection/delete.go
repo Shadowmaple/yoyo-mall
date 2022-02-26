@@ -10,7 +10,8 @@ import (
 )
 
 type DeleteReq struct {
-	List []uint32 `json:"list"`
+	List        []uint32 `json:"list"`       // 记录id列表，批量删除，优先
+	ProductList uint32   `json:"product_id"` // 商品id，根据用户id和商品id删除
 }
 
 func Delete(c *gin.Context) {
@@ -28,7 +29,13 @@ func Delete(c *gin.Context) {
 
 	userID := c.MustGet("id").(uint32)
 
-	if err := collection.BatchDelete(userID, req.List); err != nil {
+	var err error
+	if len(req.List) != 0 {
+		err = collection.BatchDelete(userID, req.List)
+	} else {
+		err = collection.DelByProductID(userID, req.ProductList)
+	}
+	if err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return
 	}

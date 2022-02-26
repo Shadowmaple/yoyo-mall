@@ -11,26 +11,33 @@ type BasicItem struct {
 }
 
 // 批量插入
+// 已有的记录更改数量，无的记录插入
 func BatchAdd(userID uint32, list []BasicItem) error {
 	// 获取已有的记录，防止重复插入
 	models, err := model.GetCarts(userID)
 	if err != nil {
 		return err
 	}
-	existProducts := make(map[uint32]bool, len(models))
+	existProducts := make(map[uint32]model.CartModel, len(models))
 	for _, model := range models {
-		existProducts[model.ProductID] = true
+		existProducts[model.ProductID] = *model
 	}
 
 	records := make([]model.CartModel, 0, len(list))
 
 	for _, item := range list {
-		if _, ok := existProducts[item.ID]; ok {
-			continue
-		}
 		if item.Num <= 0 {
 			item.Num = 1
 		}
+		// 已有的记录，更新数量值
+		if record, ok := existProducts[item.ID]; ok {
+			num := record.Num + item.Num
+			if err := model.UpdateCartNum(record.ID, num); err != nil {
+				return err
+			}
+			continue
+		}
+
 		records = append(records, model.CartModel{
 			UserID:     userID,
 			ProductID:  item.ID,
