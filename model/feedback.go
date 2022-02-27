@@ -13,7 +13,7 @@ type FeedbackModel struct {
 	Pictures   string // 反馈图片，分号分割
 	HasRead    bool
 	CreateTime time.Time
-	ReadTime   time.Time
+	ReadTime   *time.Time
 }
 
 func (m *FeedbackModel) TableName() string {

@@ -10,11 +10,11 @@ func NewLogistics(orderID uint32, status int8) error {
 	content := ""
 	switch status {
 	case 0:
-		content = "您已付款，等待发货"
+		content = "已付款"
 	case 1:
 		content = "商品已发货"
 	case 2:
-		content = "商品已抵达"
+		content = "商品已签收"
 	case 3:
 		content = "订单已取消"
 	case 4:

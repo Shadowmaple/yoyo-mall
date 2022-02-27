@@ -2,6 +2,7 @@ package coupon
 
 import (
 	"yoyo-mall/model"
+	"yoyo-mall/pkg/log"
 	"yoyo-mall/util"
 )
 
@@ -37,8 +38,9 @@ func PrivateList(userID uint32, status int8) (list []*PrivateItem, err error) {
 func PublicList(userID uint32, page, limit int, cid, cid2 uint32) (list []*PublicItem, err error) {
 	list = make([]*PublicItem, 0)
 
-	records, err := model.GetCoupons(page, limit, cid, cid2)
+	records, err := model.GetCoupons(limit, limit*page, cid, cid2)
 	if err != nil {
+		log.Info("model.GetCoupons error:" + err.Error())
 		return
 	}
 
