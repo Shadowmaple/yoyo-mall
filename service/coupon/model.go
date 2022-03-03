@@ -25,6 +25,7 @@ type PrivateItem struct {
 	Access int8 `json:"access"`
 }
 
+// 优惠券设置item
 type CouponConfigItem struct {
 	BasicCoupon
 	IsPublic      bool   `json:"is_public"`       // 是否公共可领取
@@ -34,4 +35,11 @@ type CouponConfigItem struct {
 	GrabEndTime   string `json:"grab_end_time"`   // 领取截止时间
 	CodeBeginTime string `json:"code_begin_time"` // 兑换开始时间
 	CodeEndTime   string `json:"code_end_time"`   // 兑换截止时间
+}
+
+// 管理端查询列表item
+type AdminItem struct {
+	CouponConfigItem
+	GrabNum    int64  `json:"grab_num"`    // 领取人数
+	CreateTime string `json:"create_time"` // 记录/优惠券创建时间
 }

@@ -48,6 +48,14 @@ func HasGrabCoupon(userID, couponID uint32) bool {
 	return true
 }
 
+func CountCouponGrabNum(couponID uint32) (count int64) {
+	DB.Self.Where("is_deleted = 0").
+		Where("coupon_id = ?", couponID).
+		Count(&count)
+
+	return
+}
+
 type UserCouponItem struct {
 	CouponModel
 	Status int8

@@ -65,7 +65,11 @@ func GetOrderByID(id uint32) (*OrderModel, error) {
 func OrderList(userID uint32, limit, offset int, status int8) ([]*OrderModel, error) {
 	list := make([]*OrderModel, 0)
 
-	query := DB.Self.Where("user_id = ?", userID)
+	query := DB.Self
+
+	if userID > 0 {
+		query = query.Where("user_id = ?", userID)
+	}
 
 	if status != -1 {
 		query = query.Where("status = ?", status)

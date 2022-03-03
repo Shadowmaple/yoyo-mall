@@ -68,3 +68,46 @@ func PublicList(userID uint32, page, limit int, cid, cid2 uint32) (list []*Publi
 
 	return
 }
+
+// 管理端查询列表
+// todo: kind 查询过滤
+func AdminList(page, limit int, cid, cid2 uint32, kind int8) (list []*AdminItem, err error) {
+	list = make([]*AdminItem, 0)
+
+	records, err := model.GetCoupons(limit, limit*page, cid, cid2)
+	if err != nil {
+		log.Info("model.GetCoupons error:" + err.Error())
+		return
+	}
+
+	for _, record := range records {
+		grabNum := model.CountCouponGrabNum(record.ID)
+
+		list = append(list, &AdminItem{
+			CouponConfigItem: CouponConfigItem{
+				BasicCoupon: BasicCoupon{
+					ID:        record.ID,
+					Cid:       record.Cid,
+					Cid2:      record.Cid2,
+					Discount:  record.Discount,
+					Threshold: record.Threshold,
+					Kind:      record.Kind,
+					Title:     record.Title,
+					BeginTime: util.GetStandardTime(record.BeginTime),
+					EndTime:   util.GetStandardTime(record.EndTime),
+				},
+				IsPublic:      record.IsPublic,
+				Code:          record.Code,
+				Remain:        record.Remain,
+				GrabBeginTime: util.GetStandardTime(record.GrabBeginTime),
+				GrabEndTime:   util.GetStandardTime(record.GrabEndTime),
+				CodeBeginTime: util.GetStandardTime(record.CodeBeginTime),
+				CodeEndTime:   util.GetStandardTime(record.CodeEndTime),
+			},
+			GrabNum:    grabNum,
+			CreateTime: util.GetStandardTime(record.CreateTime),
+		})
+	}
+
+	return
+}

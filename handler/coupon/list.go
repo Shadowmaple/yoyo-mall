@@ -64,3 +64,34 @@ func PublicList(c *gin.Context) {
 		List:  list,
 	})
 }
+
+type AdminListReq struct {
+	Kind  int8   `form:"kind"` // 0全部……
+	Page  int    `form:"page"`
+	Limit int    `form:"limit"`
+	Cid   uint32 `form:"cid"`
+	Cid2  uint32 `form:"cid2"`
+}
+
+func AdminList(c *gin.Context) {
+	req := &AdminListReq{}
+	if err := c.BindQuery(req); err != nil {
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
+		return
+	}
+
+	if req.Limit <= 0 {
+		req.Limit = 20
+	}
+
+	list, err := coupon.AdminList(req.Page, req.Limit, req.Cid, req.Cid2, req.Kind)
+	if err != nil {
+		handler.SendError(c, errno.InternalError, nil, err.Error())
+		return
+	}
+
+	handler.SendResponse(c, nil, handler.ListResp{
+		Total: len(list),
+		List:  list,
+	})
+}

@@ -87,6 +87,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		orderGp.GET("/info/:id", order.Info)
 		orderGp.POST("", order.Create)
 		orderGp.PUT("/:id", order.Update)
+		orderGp.GET("/admin/list", order.AdminList)
 	}
 
 	// search
@@ -144,6 +145,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		couponGp.PUT("/private", authFunc(), coupon.Use)
 		couponGp.POST("", adminAuthFunc(), address.AddOrUpdate)
 		couponGp.DELETE("", adminAuthFunc(), coupon.Delete)
+		couponGp.GET("/admin", adminAuthFunc(), coupon.AdminList)
 	}
 
 	// feedback

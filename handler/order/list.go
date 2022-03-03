@@ -33,3 +33,22 @@ func List(c *gin.Context) {
 		"list":  list,
 	})
 }
+
+func AdminList(c *gin.Context) {
+	req := &ListReq{}
+	if err := c.BindQuery(req); err != nil {
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, err.Error())
+		return
+	}
+
+	list, err := order.List(0, req.Limit, req.Page, req.Kind)
+	if err != nil {
+		handler.SendError(c, errno.InternalError, nil, err.Error())
+		return
+	}
+
+	handler.SendResponse(c, nil, map[string]interface{}{
+		"total": len(list),
+		"list":  list,
+	})
+}
