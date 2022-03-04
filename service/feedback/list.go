@@ -27,6 +27,7 @@ func List(limit, page int, kind, read int8) (list []*FeedbackItem, err error) {
 				Pictures: util.ParseMultiImage(record.Pictures),
 			},
 			ID:           record.ID,
+			Time:         util.GetStandardTime(record.CreateTime),
 			HasRead:      record.HasRead,
 			UserNickname: user.Nickname,
 			UserAvatar:   user.Avatar,

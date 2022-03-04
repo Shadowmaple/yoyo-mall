@@ -17,6 +17,7 @@ var (
 	// Auth errors
 	ErrAuthFailed   = &Errno{Code: 20001, Message: "The sid or password is incorrect."}
 	ErrTokenInvalid = &Errno{Code: 20002, Message: "The token is invalid."}
+	ErrPwdWrong     = &Errno{Code: 20003, Message: "Password is wrong."}
 
 	// User errors
 	ErrUserNotFound = &Errno{Code: 21001, Message: "User not found."}

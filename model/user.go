@@ -52,3 +52,12 @@ func GetUserByWechat(id string) (*UserModel, error) {
 	}
 	return u, d.Error
 }
+
+func GetUserByUsername(username string) (UserModel, error) {
+	u := UserModel{}
+	d := DB.Self.Where("username = ?", username).First(&u)
+	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
+		return u, errno.ErrRecordNotFound
+	}
+	return u, d.Error
+}

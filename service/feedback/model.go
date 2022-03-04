@@ -9,6 +9,7 @@ type BasicItem struct {
 type FeedbackItem struct {
 	BasicItem
 	ID           uint32 `json:"id"`
+	Time         string `json:"time"`
 	HasRead      bool   `json:"has_read"`
 	UserNickname string `json:"user_nickname"`
 	UserAvatar   string `json:"user_avatar"`
