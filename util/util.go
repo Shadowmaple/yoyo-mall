@@ -6,6 +6,9 @@ import (
 )
 
 func ParseMultiImage(s string) []string {
+	if s == "" {
+		return make([]string, 0)
+	}
 	return strings.Split(s, ";")
 }
 

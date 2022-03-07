@@ -28,7 +28,7 @@ type CouponModel struct {
 	CodeEndTime   time.Time // 兑换截止时间
 	CreateTime    time.Time
 	IsDeleted     bool
-	DeleteTime    time.Time
+	DeleteTime    *time.Time
 }
 
 func (m *CouponModel) TableName() string {
@@ -44,18 +44,28 @@ func (m *CouponModel) Save() error {
 	return DB.Self.Save(m).Error
 }
 
-func GetCoupons(limit, offset int, cid, cid2 uint32) ([]*CouponModel, error) {
+type CouponFilter struct {
+	Cid    uint32
+	Cid2   uint32
+	Public bool
+}
+
+func GetCoupons(limit, offset int, filter *CouponFilter) ([]*CouponModel, error) {
 	list := make([]*CouponModel, 0)
 	now := util.GetCurrentTime()
 
 	// 未删除的且未失效的
 	query := DB.Self.Where("is_deleted = 0 and end_time > ?", now)
 
-	if cid > 0 {
-		query = query.Where("cid = ?", cid)
+	if filter.Public {
+		query = query.Where("is_public = 1")
 	}
-	if cid2 > 0 {
-		query = query.Where("cid2 = ?", cid2)
+
+	if filter.Cid > 0 {
+		query = query.Where("cid = ?", filter.Cid)
+	}
+	if filter.Cid2 > 0 {
+		query = query.Where("cid2 = ?", filter.Cid2)
 	}
 
 	err := query.Limit(limit).Offset(offset).Find(&list).Error
@@ -64,10 +74,19 @@ func GetCoupons(limit, offset int, cid, cid2 uint32) ([]*CouponModel, error) {
 }
 
 func GetCouponByID(id uint32) (*CouponModel, error) {
-	var m *CouponModel
-	err := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(m).Error
+	var m CouponModel
+	err := DB.Self.Where("is_deleted = 0").Where("id = ?", id).First(&m).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
+	}
+	return &m, err
+}
+
+func GetCouponByCode(code string) (CouponModel, error) {
+	var m CouponModel
+	err := DB.Self.Where("is_deleted = 0").Where("code = ?", code).First(&m).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return m, errno.ErrRecordNotFound
 	}
 	return m, err
 }

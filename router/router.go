@@ -143,7 +143,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		couponGp.GET("/public", authFunc(), coupon.PublicList)
 		couponGp.GET("", authFunc(), coupon.Grab)
 		couponGp.PUT("/private", authFunc(), coupon.Use)
-		couponGp.POST("", adminAuthFunc(), address.AddOrUpdate)
+		couponGp.POST("", adminAuthFunc(), coupon.AddOrUpdate)
 		couponGp.DELETE("", adminAuthFunc(), coupon.Delete)
 		couponGp.GET("/admin", adminAuthFunc(), coupon.AdminList)
 	}

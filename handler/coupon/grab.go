@@ -21,15 +21,23 @@ func Grab(c *gin.Context) {
 		return
 	}
 
+	if req.ID == 0 && req.Code == "" {
+		handler.SendBadRequest(c, errno.ErrGetQuery, nil, "The id and code are both empty.")
+		return
+	}
+
+	var data coupon.PrivateItem
+	var err error
 	userID := c.MustGet("id").(uint32)
 
 	// 是領取还是兑换
-	isGrab := false
+	// 领取
 	if len(req.Code) == 0 {
-		isGrab = true
+		data, err = coupon.GrabCoupon(userID, req.ID)
+	} else {
+		data, err = coupon.GrabCouponByCode(userID, req.Code)
 	}
 
-	data, err := coupon.GrabCoupon(userID, req.ID, req.Code, isGrab)
 	if err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return

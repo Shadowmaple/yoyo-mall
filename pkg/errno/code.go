@@ -26,6 +26,13 @@ var (
 	// order errors
 	ErrOrderExpectedStatus = &Errno{Code: 22001, Message: "Expected updated order'status is wrong."}
 
+	// coupon errors
+	ErrCouponCodeWrong  = &Errno{Code: 23001, Message: "Coupon's code is Wrong."}
+	ErrCouponGrabbed    = &Errno{Code: 23002, Message: "Has already grabbed."}
+	ErrCouponNotPublic  = &Errno{Code: 23003, Message: "The coupon is not public."}
+	ErrCouponNotExist   = &Errno{Code: 23004, Message: "The coupon does not exist."}
+	ErrCouponCanNotGrab = &Errno{Code: 23005, Message: "Can not grab the coupon now."}
+
 	// product errors
 
 	// comment errors

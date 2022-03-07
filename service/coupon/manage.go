@@ -1,11 +1,15 @@
 package coupon
 
-import "yoyo-mall/model"
+import (
+	"yoyo-mall/model"
+	"yoyo-mall/pkg/log"
+)
 
 func New(req *CouponConfigItem) (err error) {
 	// 解析时间
 	t, err := BatchParseTime(req)
 	if err != nil {
+		log.Error("New.BatchParseTime error:" + err.Error())
 		return
 	}
 
@@ -28,6 +32,7 @@ func New(req *CouponConfigItem) (err error) {
 	}
 
 	if err = coupon.Create(); err != nil {
+		log.Error("coupon.Create error:" + err.Error())
 		return
 	}
 
@@ -37,6 +42,7 @@ func New(req *CouponConfigItem) (err error) {
 func Update(req *CouponConfigItem) (err error) {
 	coupon, err := model.GetCouponByID(req.ID)
 	if err != nil {
+		log.Error("GetCouponByID error: " + err.Error())
 		return
 	}
 
@@ -63,11 +69,13 @@ func Update(req *CouponConfigItem) (err error) {
 		GrabEndTime:   t.GrabEndTime,
 		CodeBeginTime: t.CodeBeginTime,
 		CodeEndTime:   t.CodeEndTime,
+		CreateTime:    coupon.CreateTime,
 		IsDeleted:     coupon.IsDeleted,
 		DeleteTime:    coupon.DeleteTime,
 	}
 
 	if err = coupon.Save(); err != nil {
+		log.Error("coupon.Save error:" + err.Error())
 		return
 	}
 

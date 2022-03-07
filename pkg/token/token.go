@@ -49,7 +49,10 @@ func Parse(tokenString string, secret string) (*Context, error) {
 
 		// Read the token if it's valid.
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// fmt.Printf("-- claims: %+v", claims)
 		ctx.ID = uint32(claims["id"].(float64))
+		ctx.Role = uint8(claims["role"].(float64))
+		ctx.OpenID = claims["open_id"].(string)
 		return ctx, nil
 
 		// Other errors.

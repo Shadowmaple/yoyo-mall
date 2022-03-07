@@ -19,7 +19,7 @@ type CommentModel struct {
 	IsAnoymous   bool // 是否匿名
 	CreateTime   time.Time
 	IsDeleted    bool
-	DeleteTime   time.Time
+	DeleteTime   *time.Time
 }
 
 func (c *CommentModel) TableName() string {
@@ -55,6 +55,6 @@ func GetComments(evaluationID uint32, limit, offset int) ([]*CommentModel, error
 
 func CountComment(evaluationID uint32) int {
 	var count int64
-	DB.Self.Where("is_deleted = 0").Where("evaluation_id = ?", evaluationID).Count(&count)
+	DB.Self.Model(&CommentModel{}).Where("is_deleted = 0").Where("evaluation_id = ?", evaluationID).Count(&count)
 	return int(count)
 }

@@ -25,7 +25,7 @@ type ProductModel struct {
 	PublishTime time.Time // 出版时间
 	CreateTime  time.Time
 	IsDeleted   bool
-	DeleteTime  time.Time
+	DeleteTime  *time.Time
 }
 
 func (p *ProductModel) TableName() string {

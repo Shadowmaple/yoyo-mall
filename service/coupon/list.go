@@ -38,7 +38,13 @@ func PrivateList(userID uint32, status int8) (list []*PrivateItem, err error) {
 func PublicList(userID uint32, page, limit int, cid, cid2 uint32) (list []*PublicItem, err error) {
 	list = make([]*PublicItem, 0)
 
-	records, err := model.GetCoupons(limit, limit*page, cid, cid2)
+	filter := &model.CouponFilter{
+		Cid:    cid,
+		Cid2:   cid2,
+		Public: true,
+	}
+
+	records, err := model.GetCoupons(limit, limit*page, filter)
 	if err != nil {
 		log.Info("model.GetCoupons error:" + err.Error())
 		return
@@ -74,7 +80,12 @@ func PublicList(userID uint32, page, limit int, cid, cid2 uint32) (list []*Publi
 func AdminList(page, limit int, cid, cid2 uint32, kind int8) (list []*AdminItem, err error) {
 	list = make([]*AdminItem, 0)
 
-	records, err := model.GetCoupons(limit, limit*page, cid, cid2)
+	filter := &model.CouponFilter{
+		Cid:  cid,
+		Cid2: cid2,
+	}
+
+	records, err := model.GetCoupons(limit, limit*page, filter)
 	if err != nil {
 		log.Info("model.GetCoupons error:" + err.Error())
 		return

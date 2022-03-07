@@ -7,6 +7,7 @@ import (
 
 type CollectItem struct {
 	ID         uint32  `json:"id"`
+	ProductID  uint32  `json:"product_id"`
 	Title      string  `json:"title"`
 	Author     string  `json:"author"`
 	Publisher  string  `json:"publisher"`
@@ -33,6 +34,7 @@ func List(userID uint32, limit, page int) (list []*CollectItem, err error) {
 		}
 		list = append(list, &CollectItem{
 			ID:         item.ID,
+			ProductID:  item.ProductID,
 			Title:      product.Title,
 			Author:     product.Author,
 			Publisher:  product.Publisher,

@@ -41,6 +41,7 @@ func AdminLogin(c *gin.Context) {
 	// 密码错误登录失败
 	if id == 0 {
 		handler.SendResponse(c, errno.ErrPwdWrong, LoginResp{})
+		return
 	}
 
 	t, err := token.Sign(c, token.Context{ID: id, Role: 1}, viper.GetString("jwt_secret"))
@@ -49,7 +50,7 @@ func AdminLogin(c *gin.Context) {
 		return
 	}
 
-	handler.SendResponse(c, nil, LoginResp{
-		Token: t,
+	handler.SendResponse(c, nil, map[string]interface{}{
+		"token": t,
 	})
 }

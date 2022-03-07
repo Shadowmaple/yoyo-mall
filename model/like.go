@@ -24,7 +24,8 @@ func (m *LikeModel) TableName() string {
 
 func HasLiked(userID, commentID uint32, kind int8) bool {
 	var count int64
-	DB.Self.Where("is_deleted = 0").
+	DB.Self.Model(&LikeModel{}).
+		Where("is_deleted = 0").
 		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
 		Count(&count)
 
@@ -80,7 +81,8 @@ func Like(userID, commentID uint32, kind int8) error {
 
 func GetLikeNum(commentID uint32, kind int8) (int, error) {
 	var count int64
-	DB.Self.Where("is_deleted = 0").
+	DB.Self.Model(&LikeModel{}).
+		Where("is_deleted = 0").
 		Where("comment_id = ? and kind = ?", commentID, kind).
 		Count(&count)
 
