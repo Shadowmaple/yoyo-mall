@@ -73,7 +73,7 @@ func UpdateStatus(id uint32, expectedStatus int8) error {
 
 	record.Status = expectedStatus
 	now := util.GetCurrentTime()
-	var logisticState int8
+	var logisticState int8 = -1
 
 	switch expectedStatus {
 	case 1:
@@ -88,6 +88,7 @@ func UpdateStatus(id uint32, expectedStatus int8) error {
 		// 变为已签收/待评价
 		record.ConfirmTime = &now
 		logisticState = 2
+	case 4:
 	case 5:
 		// 未支付下取消订单
 		logisticState = 3
@@ -100,6 +101,10 @@ func UpdateStatus(id uint32, expectedStatus int8) error {
 
 	if err := record.Save(); err != nil {
 		return err
+	}
+
+	if logisticState == -1 {
+		return nil
 	}
 
 	// 插入新物流记录

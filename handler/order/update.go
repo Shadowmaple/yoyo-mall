@@ -35,7 +35,7 @@ func Update(c *gin.Context) {
 
 	expectedStatus := req.Status
 	switch expectedStatus {
-	case 1, 3, 5, 6:
+	case 0, 1, 3, 5, 6:
 		if role != 0 {
 			log.Error(fmt.Sprintf("Permission denied: role=%d, req=%+v", role, req))
 			handler.SendBadRequest(c, errno.ErrOrderExpectedStatus, nil, "permission denied")

@@ -45,7 +45,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	g.POST(BasePath+"/login/admin", user.AdminLogin)
 
 	// upload
-	g.POST(BasePath+"/upload/image", upload.Image)
+	g.POST(BasePath+"/upload/image", authFunc(), upload.Image)
 
 	// user
 	u := g.Group(BasePath + "/user")
