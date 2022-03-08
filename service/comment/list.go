@@ -25,7 +25,7 @@ func List(userID, evaluationID uint32, limit, page int) (list []*CommentItem, er
 
 		hasLiked, canHandle := false, false
 		if userID > 0 {
-			hasLiked = model.HasLiked(userID, record.ID, 0)
+			hasLiked = model.HasLiked(userID, record.ID, 1)
 			if record.UserID == userID {
 				canHandle = true
 			}
