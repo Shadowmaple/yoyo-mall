@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/pkg/log"
 	"yoyo-mall/util"
 
 	"gorm.io/gorm"
@@ -33,24 +34,24 @@ func HasLiked(userID, commentID uint32, kind int8) bool {
 }
 
 func GetLikedRecord(userID, commentID uint32, kind, isDeleted int8) (*LikeModel, error) {
-	var m *LikeModel
+	var m LikeModel
 	d := DB.Self.Where("is_deleted = ?", isDeleted).
 		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
-		First(m)
+		First(&m)
 
 	if errors.Is(d.Error, gorm.ErrRecordNotFound) {
 		return nil, errno.ErrRecordNotFound
 	}
 
-	return m, d.Error
+	return &m, d.Error
 }
 
 func Unlike(userID, commentID uint32, kind int8) error {
-	deleteTime := util.GetStandardTime(util.GetCurrentTime())
-	err := DB.Self.
+	// deleteTime := util.GetStandardTime(util.GetCurrentTime())
+	err := DB.Self.Model(&LikeModel{}).
 		Where("is_deleted = 0").
 		Where("user_id = ? and comment_id = ? and kind = ?", userID, commentID, kind).
-		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": deleteTime}).
+		Update("is_deleted", 1).
 		Error
 
 	return err
@@ -59,7 +60,8 @@ func Unlike(userID, commentID uint32, kind int8) error {
 // 点赞，目前是复用已删除的记录
 func Like(userID, commentID uint32, kind int8) error {
 	m, err := GetLikedRecord(userID, commentID, kind, 1)
-	if err != nil {
+	if err != nil && err != errno.ErrRecordNotFound {
+		log.Error("GetLikedRecord error: " + err.Error())
 		return err
 	}
 	// 存在删除的记录，修改

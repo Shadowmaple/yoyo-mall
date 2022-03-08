@@ -31,7 +31,7 @@ func List(userID, evaluationID uint32, limit, page int) (list []*CommentItem, er
 			}
 		}
 
-		likeNum, err1 := model.GetLikeNum(record.ID, 0)
+		likeNum, err1 := model.GetLikeNum(record.ID, 1)
 		if err1 != nil {
 			err = err1
 			return

@@ -27,9 +27,12 @@ func CommentList(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetUint("id")
+	var userID uint32
+	if id, ok := c.Get("id"); ok {
+		userID = id.(uint32)
+	}
 
-	list, err := comment.List(uint32(userID), uint32(evaluationID), req.Limit, req.Page)
+	list, err := comment.List(userID, uint32(evaluationID), req.Limit, req.Page)
 	if err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return

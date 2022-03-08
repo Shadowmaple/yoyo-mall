@@ -26,9 +26,12 @@ func EvaluationList(c *gin.Context) {
 		req.Limit = 20
 	}
 
-	userID := c.GetUint("id")
+	var userID uint32
+	if id, ok := c.Get("id"); ok {
+		userID = id.(uint32)
+	}
 
-	list, err := evaluation.List(uint32(userID), req.ProductID, req.Limit, req.Page)
+	list, err := evaluation.List(userID, req.ProductID, req.Limit, req.Page)
 	if err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return
@@ -71,8 +74,12 @@ func EvaluationInfo(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetUint("id")
-	data, err := evaluation.Info(uint32(id), uint32(userID))
+	var userID uint32
+	if id, ok := c.Get("id"); ok {
+		userID = id.(uint32)
+	}
+
+	data, err := evaluation.Info(uint32(id), userID)
 	if err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return

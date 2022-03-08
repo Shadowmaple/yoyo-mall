@@ -15,8 +15,8 @@ func List(userID, productID uint32, limit, page int) (list []*EvaluationItem, er
 		return
 	}
 
-	var item EvaluationItem
 	for _, record := range records {
+		var item EvaluationItem
 		item, err = processRecord(record, userID)
 		if err != nil {
 			return

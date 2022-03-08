@@ -1,10 +1,11 @@
 package comment
 
 import (
-	"log"
+	"fmt"
 	"yoyo-mall/handler"
 	"yoyo-mall/model"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/pkg/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +37,7 @@ func Like(c *gin.Context) {
 	}
 
 	if err != nil {
-		log.Printf("like api: req: %+v\n", req)
+		log.Error(fmt.Sprintf("like api error: req=%+v; err=%s", req, err.Error()))
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return
 	}

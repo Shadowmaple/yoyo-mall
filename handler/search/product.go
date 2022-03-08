@@ -28,7 +28,10 @@ func ProductSearch(c *gin.Context) {
 		req.Limit = 20
 	}
 
-	userID := c.GetUint("id")
+	var userID uint32
+	if id, ok := c.Get("id"); ok {
+		userID = id.(uint32)
+	}
 
 	searchItem := product.SearchItem{
 		Title:     req.Title,
@@ -37,7 +40,7 @@ func ProductSearch(c *gin.Context) {
 		Publisher: req.Publisher,
 	}
 
-	list, err := product.Search(uint32(userID), req.Limit, req.Page, searchItem)
+	list, err := product.Search(userID, req.Limit, req.Page, searchItem)
 	if err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return
