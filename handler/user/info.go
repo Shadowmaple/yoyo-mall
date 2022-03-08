@@ -11,7 +11,6 @@ import (
 type UserInfo struct {
 	Avatar   string `json:"avatar"`
 	Nickname string `json:"nickname"`
-	Gender   int8   `json:"gender"`
 }
 
 func UpdateInfo(c *gin.Context) {
@@ -31,7 +30,6 @@ func UpdateInfo(c *gin.Context) {
 
 	u.Avatar = req.Avatar
 	u.Nickname = req.Nickname
-	u.Gender = req.Gender
 	if err = u.Save(); err != nil {
 		handler.SendError(c, errno.InternalError, nil, err.Error())
 		return
@@ -52,7 +50,6 @@ func GetInfo(c *gin.Context) {
 	resp := &UserInfo{
 		Avatar:   u.Avatar,
 		Nickname: u.Nickname,
-		Gender:   u.Gender,
 	}
 
 	handler.SendResponse(c, nil, resp)
