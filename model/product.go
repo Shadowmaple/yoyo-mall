@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 	"yoyo-mall/pkg/errno"
+	"yoyo-mall/util"
 
 	"gorm.io/gorm"
 )
@@ -33,6 +34,7 @@ func (p *ProductModel) TableName() string {
 }
 
 func (p *ProductModel) Create() error {
+	p.CreateTime = util.GetCurrentTime()
 	return DB.Self.Create(p).Error
 }
 
@@ -47,6 +49,15 @@ func GetProductByID(id uint32) (*ProductModel, error) {
 		return nil, errno.ErrRecordNotFound
 	}
 	return model, d.Error
+}
+
+func DeleteProduct(id uint32) (err error) {
+	deleteTime := util.GetCurrentTime()
+	err = DB.Self.Model(&ProductModel{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{"is_deleted": 1, "delete_time": deleteTime}).
+		Error
+	return
 }
 
 type ProductItemModel struct {

@@ -34,6 +34,7 @@ var (
 	ErrCouponCanNotGrab = &Errno{Code: 23005, Message: "Can not grab the coupon now."}
 
 	// product errors
+	ErrProductNotExist = &Errno{Code: 24001, Message: "The product dose not exist."}
 
 	// comment errors
 
